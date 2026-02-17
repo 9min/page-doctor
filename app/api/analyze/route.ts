@@ -114,7 +114,7 @@ function normalizeResponse(data: any, url: string, strategy: Strategy): Analysis
   return {
     url,
     strategy,
-    fetchedAt: new Date().toISOString(),
+    fetchedAt: data.lighthouseResult?.fetchTime ?? new Date().toISOString(),
     scores,
     webVitals,
     audits,

@@ -9,6 +9,11 @@ class PageDoctorDB extends Dexie {
     super("PageDoctorDB");
 
     this.version(1).stores({
+      analyses: "++id, url, strategy, analyzedAt, [url+strategy]",
+      settings: "key",
+    });
+
+    this.version(2).stores({
       analyses: "++id, url, strategy, analyzedAt, [url+strategy], [url+analyzedAt]",
       settings: "key",
     });
