@@ -1,0 +1,27 @@
+language: "ko-KR"
+
+reviews:
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  path_instructions:
+    - path: "app/**/*.tsx"
+      instructions: "Next.js 15 App Router 컴포넌트입니다. Server/Client Component를 구분합니다. 'use client' 지시자가 필요한지 확인합니다."
+    - path: "app/api/**/*.ts"
+      instructions: "Next.js API Route입니다. Google API 키가 서버사이드에서만 사용되는지 확인합니다. NEXT_PUBLIC_ 접두사로 노출되면 안 됩니다."
+    - path: "components/**/*.tsx"
+      instructions: "React 함수 컴포넌트입니다. shadcn/ui + Tailwind CSS를 사용합니다. UI 텍스트는 한국어입니다."
+    - path: "hooks/**/*.ts"
+      instructions: "React 커스텀 훅입니다. 클라이언트 사이드에서만 동작합니다."
+    - path: "lib/**/*.ts"
+      instructions: "유틸리티 및 설정 파일입니다. Dexie.js는 클라이언트 전용입니다."
+
+  auto_review:
+    enabled: true
+    drafts: false
+
+chat:
+  auto_reply: true
