@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
         signal: controller.signal,
       });
     } catch (err) {
-      clearTimeout(timeout);
       if (err instanceof DOMException && err.name === "AbortError") {
         return NextResponse.json(
           { error: "분석 요청 시간이 초과되었습니다.", code: "TIMEOUT" },
