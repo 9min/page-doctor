@@ -42,7 +42,26 @@ export async function POST(request: NextRequest) {
     params.append("category", "BEST_PRACTICES");
     params.append("category", "SEO");
 
-    const psiResponse = await fetch(`${PSI_API_URL}?${params.toString()}`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
+    let psiResponse: Response;
+    try {
+      psiResponse = await fetch(`${PSI_API_URL}?${params.toString()}`, {
+        signal: controller.signal,
+      });
+    } catch (err) {
+      clearTimeout(timeout);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        return NextResponse.json(
+          { error: "분석 요청 시간이 초과되었습니다.", code: "TIMEOUT" },
+          { status: 504 }
+        );
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!psiResponse.ok) {
       const errorData = await psiResponse.json().catch(() => null);

@@ -44,7 +44,7 @@ export function RecentAnalyses() {
       <div className="space-y-2">
         {records.map((record) => (
           <Link
-            key={record.id}
+            key={record.id ?? `${record.url}-${record.analyzedAt}`}
             href={`/analyze?url=${encodeURIComponent(record.url)}&strategy=${record.strategy}`}
             className="glass-card flex items-center justify-between p-3 transition-colors hover:bg-accent/50"
           >

@@ -14,7 +14,11 @@ import type { Strategy } from "@/types";
 export function AnalyzeDashboard() {
   const searchParams = useSearchParams();
   const url = searchParams.get("url");
-  const strategy = (searchParams.get("strategy") as Strategy) || "mobile";
+  const rawStrategy = searchParams.get("strategy");
+  const strategy: Strategy =
+    rawStrategy === "mobile" || rawStrategy === "desktop"
+      ? rawStrategy
+      : "mobile";
 
   const { result, isLoading, error, analyze } = useAnalysis();
   const { saveResult } = useHistory();

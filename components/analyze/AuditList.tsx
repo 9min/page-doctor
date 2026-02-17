@@ -12,6 +12,14 @@ interface AuditListProps {
 
 type FilterKey = "all" | Category;
 
+const FILTER_OPTIONS: Array<{ key: FilterKey; label: string }> = [
+  { key: "all", label: "전체" },
+  { key: "performance", label: CATEGORY_LABELS.performance },
+  { key: "accessibility", label: CATEGORY_LABELS.accessibility },
+  { key: "best-practices", label: CATEGORY_LABELS["best-practices"] },
+  { key: "seo", label: CATEGORY_LABELS.seo },
+];
+
 export function AuditList({ audits }: AuditListProps) {
   const [filter, setFilter] = useState<FilterKey>("all");
 
@@ -20,14 +28,6 @@ export function AuditList({ audits }: AuditListProps) {
       ? audits
       : audits.filter((a) => a.category === filter);
 
-  const filterOptions: Array<{ key: FilterKey; label: string }> = [
-    { key: "all", label: "전체" },
-    { key: "performance", label: CATEGORY_LABELS.performance },
-    { key: "accessibility", label: CATEGORY_LABELS.accessibility },
-    { key: "best-practices", label: CATEGORY_LABELS["best-practices"] },
-    { key: "seo", label: CATEGORY_LABELS.seo },
-  ];
-
   return (
     <div className="glass-card p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
@@ -35,7 +35,7 @@ export function AuditList({ audits }: AuditListProps) {
           개선 제안 ({filtered.length})
         </h2>
         <div className="flex flex-wrap gap-1">
-          {filterOptions.map((opt) => (
+          {FILTER_OPTIONS.map((opt) => (
             <Button
               key={opt.key}
               variant={filter === opt.key ? "default" : "outline"}

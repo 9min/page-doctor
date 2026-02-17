@@ -40,42 +40,39 @@ export function useHistory(): UseHistoryReturn {
 
   const saveResult = useCallback(
     async (result: AnalysisResult) => {
-      const record: AnalysisRecord = {
-        url: result.url,
-        strategy: result.strategy,
-        analyzedAt: result.fetchedAt,
-        scores: result.scores,
-        webVitals: result.webVitals,
-        audits: result.audits,
-      };
-      await db.analyses.add(record);
-      await refresh();
+      try {
+        const record: AnalysisRecord = {
+          url: result.url,
+          strategy: result.strategy,
+          analyzedAt: result.fetchedAt,
+          scores: result.scores,
+          webVitals: result.webVitals,
+          audits: result.audits,
+        };
+        await db.analyses.add(record);
+        await refresh();
+      } catch (error) {
+        console.error("Failed to save result:", error);
+      }
     },
     [refresh]
   );
 
   const getByUrl = useCallback(
     async (url: string, days?: number): Promise<AnalysisRecord[]> => {
-      const query = db.analyses.where("url").equals(url);
-
       if (days) {
         const since = new Date();
         since.setDate(since.getDate() - days);
-        const records = await query.toArray();
-        return records
-          .filter((r) => new Date(r.analyzedAt) >= since)
-          .sort(
-            (a, b) =>
-              new Date(a.analyzedAt).getTime() -
-              new Date(b.analyzedAt).getTime()
-          );
+        return db.analyses
+          .where("[url+analyzedAt]")
+          .between([url, since.toISOString()], [url, "\uffff"], true, true)
+          .sortBy("analyzedAt");
       }
 
-      const records = await query.toArray();
-      return records.sort(
-        (a, b) =>
-          new Date(a.analyzedAt).getTime() - new Date(b.analyzedAt).getTime()
-      );
+      return db.analyses
+        .where("url")
+        .equals(url)
+        .sortBy("analyzedAt");
     },
     []
   );
@@ -89,8 +86,12 @@ export function useHistory(): UseHistoryReturn {
 
   const deleteRecord = useCallback(
     async (id: number) => {
-      await db.analyses.delete(id);
-      await refresh();
+      try {
+        await db.analyses.delete(id);
+        await refresh();
+      } catch (error) {
+        console.error("Failed to delete record:", error);
+      }
     },
     [refresh]
   );
