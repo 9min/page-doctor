@@ -1,4 +1,6 @@
 import { Activity } from "lucide-react";
+import { UrlInput } from "@/components/home/UrlInput";
+import { RecentAnalyses } from "@/components/home/RecentAnalyses";
 
 export default function Home() {
   return (
@@ -17,18 +19,12 @@ export default function Home() {
         </p>
       </div>
 
-      {/* TODO: UrlInput 컴포넌트 */}
       <div className="mt-12 w-full max-w-xl">
-        <div className="glass-card flex h-14 items-center justify-center text-muted-foreground">
-          URL 입력 컴포넌트 (구현 예정)
-        </div>
+        <UrlInput />
       </div>
 
-      {/* TODO: RecentAnalyses 컴포넌트 */}
-      <div className="mt-16 w-full max-w-4xl">
-        <div className="glass-card flex h-32 items-center justify-center text-muted-foreground">
-          최근 분석 목록 (구현 예정)
-        </div>
+      <div className="mt-16">
+        <RecentAnalyses />
       </div>
     </div>
   );

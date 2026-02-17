@@ -1,11 +1,22 @@
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
+import { AnalyzeDashboard } from "@/components/analyze/AnalyzeDashboard";
+
+function AnalyzePageFallback() {
+  return (
+    <div className="flex items-center gap-3 py-8">
+      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+      <p className="text-sm text-muted-foreground">로딩 중...</p>
+    </div>
+  );
+}
+
 export default function AnalyzePage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold">분석 결과</h1>
-      {/* TODO: AnalyzeDashboard 컴포넌트 */}
-      <div className="mt-8 glass-card flex h-64 items-center justify-center text-muted-foreground">
-        분석 대시보드 (구현 예정)
-      </div>
+      <Suspense fallback={<AnalyzePageFallback />}>
+        <AnalyzeDashboard />
+      </Suspense>
     </div>
   );
 }
