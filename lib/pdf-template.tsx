@@ -6,7 +6,6 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import type { ReportData, Rating, WebVitalMetric } from "@/types";
-import { CWV_THRESHOLDS } from "@/lib/constants";
 import { getMetricRating, formatMetricValue } from "@/lib/utils";
 
 const COLORS = {

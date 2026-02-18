@@ -8,6 +8,7 @@ import { RatingBadge } from "@/components/shared/RatingBadge";
 interface MetricCardProps {
   metric: WebVitalMetric;
   value: number | null;
+  source?: "lab" | "field";
 }
 
 const COLOR_BAR_CLASSES = {
@@ -16,7 +17,7 @@ const COLOR_BAR_CLASSES = {
   poor: "color-bar-danger",
 } as const;
 
-export function MetricCard({ metric, value }: MetricCardProps) {
+export function MetricCard({ metric, value, source = "lab" }: MetricCardProps) {
   const rating = value !== null ? getMetricRating(metric, value) : "poor";
   const displayValue = formatMetricValue(metric, value);
 
@@ -33,6 +34,9 @@ export function MetricCard({ metric, value }: MetricCardProps) {
       <p className="text-3xl font-bold tracking-tight">{displayValue}</p>
       <p className="text-xs text-muted-foreground">
         {WEB_VITAL_LABELS[metric]}
+        {source === "field" && value !== null && (
+          <span className="ml-1 opacity-70">(p75)</span>
+        )}
       </p>
     </div>
   );
