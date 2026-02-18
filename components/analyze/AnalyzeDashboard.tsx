@@ -47,16 +47,27 @@ export function AnalyzeDashboard() {
 
   useEffect(() => {
     if (result && cruxFetchedUrlRef.current !== result.url) {
-      cruxFetchedUrlRef.current = result.url;
-      fetchCruxData({ url: result.url })
-        .then((res) => setCruxResult(res.result))
-        .catch(() => setCruxResult(null));
+      const targetUrl = result.url;
+      cruxFetchedUrlRef.current = targetUrl;
+      fetchCruxData({ url: targetUrl })
+        .then((res) => {
+          if (cruxFetchedUrlRef.current === targetUrl) {
+            setCruxResult(res.result);
+          }
+        })
+        .catch(() => {
+          if (cruxFetchedUrlRef.current === targetUrl) {
+            setCruxResult(null);
+          }
+          cruxFetchedUrlRef.current = null;
+        });
     }
   }, [result]);
 
+  const safeCruxResult =
+    cruxResult && result && cruxResult.url === result.url ? cruxResult : null;
   const isCruxLoading =
-    result !== null &&
-    (cruxResult === null || cruxResult.url !== result.url);
+    result !== null && safeCruxResult === null;
 
   if (!url) {
     return (
@@ -120,7 +131,7 @@ export function AnalyzeDashboard() {
 
         {/* Core Web Vitals - spans 2 cols */}
         <div className="lg:col-span-2">
-          <CoreWebVitals webVitals={result.webVitals} cruxResult={cruxResult} isCruxLoading={isCruxLoading} />
+          <CoreWebVitals webVitals={result.webVitals} cruxResult={safeCruxResult} isCruxLoading={isCruxLoading} />
         </div>
 
         {/* Summary card - 1 col */}
