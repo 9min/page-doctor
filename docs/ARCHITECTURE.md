@@ -253,6 +253,8 @@ PSI API를 호출하고 응답을 프론트엔드에 최적화된 형태로 가�
 }
 ```
 
+> **참고**: API 응답의 `fetchedAt`은 PSI API에서 반환하는 Lighthouse 실행 시각입니다. IndexedDB에 저장될 때는 `analyzedAt` 필드명으로 매핑됩니다.
+
 #### POST /api/crux
 
 Chrome UX Report API를 호출하여 실제 사용자 필드 데이터를 조회합니다.

@@ -75,7 +75,7 @@ npx tsc --noEmit   # TypeScript 타입 체크
 
 ## 프로젝트 구조
 
-```
+```text
 app/                  # Next.js App Router (페이지 + API Routes)
 components/           # UI 컴포넌트 (ui, layout, home, analyze, history, compare, shared)
 hooks/                # 커스텀 훅 (useAnalysis, useHistory, useCompare, useBudget, useSchedule 등)
