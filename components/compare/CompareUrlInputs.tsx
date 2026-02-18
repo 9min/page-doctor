@@ -78,6 +78,7 @@ export function CompareUrlInputs({
                   placeholder={`https://example${i + 1}.com`}
                   className="w-full rounded-xl border-0 bg-transparent px-3 py-2 text-sm outline-none"
                   disabled={isComparing}
+                  aria-label={`비교할 URL ${i + 1}`}
                 />
               </div>
               {urls.length > 2 && (
@@ -114,9 +115,11 @@ export function CompareUrlInputs({
       {/* Strategy selector */}
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">전략:</span>
-        <div className="flex gap-1 rounded-xl bg-secondary p-1">
+        <div className="flex gap-1 rounded-xl bg-secondary p-1" role="radiogroup" aria-label="분석 전략">
           <button
             type="button"
+            role="radio"
+            aria-checked={strategy === "desktop"}
             onClick={() => setStrategy("desktop")}
             disabled={isComparing}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
@@ -130,6 +133,8 @@ export function CompareUrlInputs({
           </button>
           <button
             type="button"
+            role="radio"
+            aria-checked={strategy === "mobile"}
             onClick={() => setStrategy("mobile")}
             disabled={isComparing}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${

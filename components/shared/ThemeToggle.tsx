@@ -21,6 +21,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
+        type="button"
         className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground cursor-pointer"
         aria-label="테마 전환"
       >
@@ -31,6 +32,7 @@ export function ThemeToggle() {
 
   return (
     <button
+      type="button"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground cursor-pointer"
       aria-label="테마 전환"

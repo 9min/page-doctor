@@ -157,30 +157,13 @@
    PageDoctor Design System Extensions
    ========================================== */
 
-/* Card - Dark: elevated surface with depth shadow */
+/* Glass Card - shared base */
 .glass-card {
-  background: #0F172A;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.25);
-}
-
-/* Header card - no heavy shadow to avoid visible band */
-header .glass-card {
-  box-shadow: none;
-}
-
-header .glass-card:hover {
-  box-shadow: none;
-}
-
-/* Card - Light: white with soft shadow */
+/* Card - Light mode */
 :root .glass-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
@@ -192,11 +175,25 @@ header .glass-card:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
-:root header .glass-card {
+:root header .glass-card,
+:root header .glass-card:hover {
   box-shadow: none;
 }
 
-:root header .glass-card:hover {
+/* Card - Dark mode (after light to win when both match) */
+.dark .glass-card {
+  background: #0F172A;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.dark header .glass-card,
+.dark header .glass-card:hover {
   box-shadow: none;
 }
 

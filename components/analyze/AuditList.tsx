@@ -39,6 +39,7 @@ export function AuditList({ audits }: AuditListProps) {
         <div className="flex flex-wrap gap-1 rounded-xl bg-secondary p-1">
           {FILTER_OPTIONS.map((opt) => (
             <button
+              type="button"
               key={opt.key}
               onClick={() => setFilter(opt.key)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${

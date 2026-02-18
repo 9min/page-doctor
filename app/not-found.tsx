@@ -15,7 +15,7 @@ export default function NotFound() {
         </p>
         <Button asChild className="btn-gradient mt-8 rounded-xl cursor-pointer">
           <Link href="/" className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
+            <Home className="h-4 w-4" aria-hidden="true" />
             홈으로 돌아가기
           </Link>
         </Button>
