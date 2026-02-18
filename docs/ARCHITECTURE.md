@@ -225,7 +225,7 @@ PSI API를 호출하고 응답을 프론트엔드에 최적화된 형태로 가�
   "result": {
     "url": "https://example.com",
     "strategy": "mobile",
-    "fetchedAt": "2025-01-01T00:00:00Z",
+    "analyzedAt": "2025-01-01T00:00:00Z",
     "scores": {
       "performance": 85,
       "accessibility": 92,
@@ -253,7 +253,7 @@ PSI API를 호출하고 응답을 프론트엔드에 최적화된 형태로 가�
 }
 ```
 
-> **참고**: API 응답의 `fetchedAt`은 PSI API에서 반환하는 Lighthouse 실행 시각입니다. IndexedDB에 저장될 때는 `analyzedAt` 필드명으로 매핑됩니다.
+> **참고**: `analyzedAt`은 PSI API에서 반환하는 Lighthouse 실행 시각(`lighthouseResult.fetchTime`)을 매핑한 필드입니다.
 
 #### POST /api/crux
 
@@ -547,7 +547,7 @@ Recharts 기본 설정:
 
 ### 구조
 
-```
+```text
 lib/i18n/
 ├── ko.ts          ← 한국어 딕셔너리 (기본 언어, TranslationKey 타입 정의)
 ├── en.ts          ← 영어 딕셔너리
@@ -608,7 +608,7 @@ Secondary: GitHub Release (선택)
 
 ### 프론트엔드
 
-```
+```text
 next 16 ─── react 19 ─── react-dom 19
 tailwindcss 4 ─── @tailwindcss/postcss 4
 shadcn/ui ──── (각 컴포넌트 개별 설치)
@@ -625,7 +625,7 @@ typescript 5
 
 ### 개발 의존성
 
-```
+```text
 @types/react, @types/node
 eslint 9 ─── eslint-config-next
 tw-animate-css (Tailwind 애니메이션)
