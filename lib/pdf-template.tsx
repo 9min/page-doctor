@@ -5,8 +5,9 @@ import {
   View,
   StyleSheet,
 } from "@react-pdf/renderer";
-import type { ReportData } from "@/types";
-import type { Rating, WebVitalMetric } from "@/types";
+import type { ReportData, Rating, WebVitalMetric } from "@/types";
+import { CWV_THRESHOLDS } from "@/lib/constants";
+import { getMetricRating, formatMetricValue } from "@/lib/utils";
 
 const COLORS = {
   primary: "#3B82F6",
@@ -20,23 +21,10 @@ const COLORS = {
   border: "#E2E8F0",
 };
 
-const CWV_THRESHOLDS: Record<WebVitalMetric, { good: number; poor: number }> = {
-  LCP: { good: 2500, poor: 4000 },
-  INP: { good: 200, poor: 500 },
-  CLS: { good: 0.1, poor: 0.25 },
-};
-
 function getScoreColor(score: number): string {
   if (score >= 90) return COLORS.good;
   if (score >= 50) return COLORS.warning;
   return COLORS.danger;
-}
-
-function getMetricRating(metric: WebVitalMetric, value: number): Rating {
-  const thresholds = CWV_THRESHOLDS[metric];
-  if (value <= thresholds.good) return "good";
-  if (value <= thresholds.poor) return "needs-improvement";
-  return "poor";
 }
 
 function getRatingColor(rating: Rating): string {
@@ -49,12 +37,6 @@ function getRatingLabel(rating: Rating): string {
   if (rating === "good") return "Good";
   if (rating === "needs-improvement") return "Needs Improvement";
   return "Poor";
-}
-
-function formatMetricValue(metric: WebVitalMetric, value: number | null): string {
-  if (value === null) return "N/A";
-  if (metric === "CLS") return value.toFixed(2);
-  return `${Math.round(value).toLocaleString()} ms`;
 }
 
 const styles = StyleSheet.create({
@@ -293,8 +275,8 @@ export function PdfReportDocument({ report }: PdfReportDocumentProps) {
         <View style={styles.vitalsRow}>
           {vitals.map(({ key, value }) => {
             const rating =
-              value !== null ? getMetricRating(key, value) : "poor";
-            const color = getRatingColor(rating);
+              value !== null ? getMetricRating(key, value) : null;
+            const color = rating ? getRatingColor(rating) : COLORS.textSecondary;
             return (
               <View key={key} style={styles.vitalCard}>
                 <Text style={styles.vitalName}>{VITAL_LABELS[key].name}</Text>
@@ -302,7 +284,7 @@ export function PdfReportDocument({ report }: PdfReportDocumentProps) {
                 <Text style={[styles.vitalValue, { color }]}>
                   {formatMetricValue(key, value)}
                 </Text>
-                {value !== null && (
+                {value !== null && rating !== null && (
                   <Text
                     style={[
                       styles.vitalRating,

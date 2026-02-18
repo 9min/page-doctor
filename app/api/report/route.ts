@@ -23,6 +23,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!Array.isArray(analysisResult.audits)) {
+      return NextResponse.json(
+        { error: "분석 결과 형식이 올바르지 않습니다.", code: "INVALID_ANALYSIS" },
+        { status: 400 }
+      );
+    }
+
     const topAudits = [...analysisResult.audits]
       .sort((a, b) => {
         const impactOrder = { high: 0, medium: 1, low: 2 };
@@ -39,7 +46,8 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json({ report });
-  } catch {
+  } catch (error) {
+    console.error("Report API Error:", error);
     return NextResponse.json(
       { error: "잘못된 요청입니다.", code: "BAD_REQUEST" },
       { status: 400 }

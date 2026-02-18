@@ -35,21 +35,26 @@ export function PdfReportButton({ result }: PdfReportButtonProps) {
       };
 
       const blob = await pdf(<PdfReportDocument report={report} />).toBlob();
-      const url = URL.createObjectURL(blob);
-      const hostname = new URL(result.url).hostname;
-      const date = new Date(result.fetchedAt)
-        .toISOString()
-        .slice(0, 10);
+      const blobUrl = URL.createObjectURL(blob);
+
+      let hostname: string;
+      try {
+        hostname = new URL(result.url).hostname;
+      } catch {
+        hostname = "unknown";
+      }
+      const date = new Date(result.fetchedAt).toISOString().slice(0, 10);
 
       const a = document.createElement("a");
-      a.href = url;
+      a.href = blobUrl;
       a.download = `PageDoctor_${hostname}_${date}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error("PDF generation failed:", err);
+      alert("PDF 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsGenerating(false);
     }
@@ -60,16 +65,18 @@ export function PdfReportButton({ result }: PdfReportButtonProps) {
       type="button"
       onClick={handleDownload}
       disabled={isGenerating}
+      aria-label={isGenerating ? "PDF 리포트 생성 중" : "PDF 리포트 다운로드"}
+      aria-busy={isGenerating}
       className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground disabled:opacity-50 cursor-pointer"
     >
       {isGenerating ? (
         <>
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           생성 중...
         </>
       ) : (
         <>
-          <FileDown className="h-4 w-4" />
+          <FileDown className="h-4 w-4" aria-hidden="true" />
           PDF 리포트
         </>
       )}
