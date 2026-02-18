@@ -96,10 +96,13 @@ function normalizeResponse(data: any, url: string, strategy: Strategy): Analysis
     seo: Math.round((categories.seo?.score ?? 0) * 100),
   };
 
+  const loadingMetrics = data.loadingExperience?.metrics;
+
   const webVitals: WebVitals = {
     lcp: lighthouseAudits["largest-contentful-paint"]?.numericValue ?? null,
     inp: lighthouseAudits["interaction-to-next-paint"]?.numericValue ??
       lighthouseAudits["experimental-interaction-to-next-paint"]?.numericValue ??
+      loadingMetrics?.INTERACTION_TO_NEXT_PAINT?.percentile ??
       null,
     cls: lighthouseAudits["cumulative-layout-shift"]?.numericValue ?? null,
   };

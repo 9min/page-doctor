@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, ExternalLink } from "lucide-react";
+import { Clock, ExternalLink, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
 import type { AnalysisRecord } from "@/types";
 import { formatDate, getScoreRating } from "@/lib/utils";
@@ -32,16 +32,36 @@ export function RecentAnalyses() {
     load();
   }, []);
 
+  async function handleDelete(e: React.MouseEvent, id: number) {
+    e.preventDefault();
+    e.stopPropagation();
+    await db.analyses.delete(id);
+    setRecords((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  async function handleDeleteAll() {
+    await db.analyses.clear();
+    setRecords([]);
+  }
+
   if (isLoading) return null;
   if (records.length === 0) return null;
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="mb-4 flex items-center gap-2">
-        <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {t("home.recent")}
-        </h2>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <h2 className="text-sm font-medium text-muted-foreground">
+            {t("home.recent")}
+          </h2>
+        </div>
+        <button
+          onClick={handleDeleteAll}
+          className="text-xs text-muted-foreground transition-colors hover:text-destructive cursor-pointer"
+        >
+          {t("home.recent.deleteAll")}
+        </button>
       </div>
       <div className="space-y-2 stagger-fade">
         {records.map((record) => (
@@ -67,10 +87,19 @@ export function RecentAnalyses() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0 ml-3">
+            <div className="flex items-center gap-2 shrink-0 ml-3">
               <span className="text-xs text-muted-foreground">
                 {formatDate(record.analyzedAt, locale)}
               </span>
+              {record.id != null && (
+                <button
+                  onClick={(e) => handleDelete(e, record.id!)}
+                  className="rounded-lg p-1.5 text-muted-foreground transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                  aria-label={t("history.deleteAria")}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              )}
               <ExternalLink
                 className="h-3.5 w-3.5 text-muted-foreground"
                 aria-hidden="true"

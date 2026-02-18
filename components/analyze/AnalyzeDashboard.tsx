@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, Globe, Monitor, Smartphone } from "lucide-react";
+import { Activity, Globe, Monitor, Smartphone, Link, BarChart3, Eye, FileText } from "lucide-react";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import { useHistory } from "@/hooks/useHistory";
 import { useBudget } from "@/hooks/useBudget";
@@ -90,7 +90,7 @@ export function AnalyzeDashboard() {
   }
 
   if (isLoading) {
-    return <LoadingSkeleton url={url} />;
+    return <LoadingSkeleton url={url} strategy={strategy} />;
   }
 
   if (error) {
@@ -176,28 +176,119 @@ export function AnalyzeDashboard() {
   );
 }
 
-function LoadingSkeleton({ url }: { url: string }) {
+const ANALYSIS_STEPS = [
+  { key: "analyze.step.connect" as const, icon: Link },
+  { key: "analyze.step.performance" as const, icon: BarChart3 },
+  { key: "analyze.step.accessibility" as const, icon: Eye },
+  { key: "analyze.step.report" as const, icon: FileText },
+] as const;
+
+function LoadingSkeleton({ url, strategy }: { url: string; strategy: Strategy }) {
   const { t } = useTranslation();
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setStep(1), 3000),
+      setTimeout(() => setStep(2), 7000),
+      setTimeout(() => setStep(3), 11000),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center gap-3">
-        <Loader2 className="h-5 w-5 animate-spin text-[#3B82F6]" />
-        <div>
-          <p className="text-sm font-medium">{t("analyze.loading")}</p>
-          <p className="text-xs text-muted-foreground">{url}</p>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center animate-fade-in">
+      {/* Central pulse ring + icon */}
+      <div className="relative flex items-center justify-center">
+        {/* Outer pulse ring */}
+        <div
+          className="absolute h-36 w-36 rounded-full border-2 border-primary/30 animate-analyze-pulse"
+        />
+        {/* Middle pulse ring (delayed) */}
+        <div
+          className="absolute h-28 w-28 rounded-full border border-primary/20 animate-analyze-pulse"
+          style={{ animationDelay: "0.5s" }}
+        />
+        {/* Spinning gradient ring */}
+        <div className="absolute h-32 w-32 rounded-full animate-analyze-spin">
+          <div
+            className="h-full w-full rounded-full"
+            style={{
+              background: "conic-gradient(from 0deg, transparent 0%, #3B82F6 30%, #818CF8 50%, #A855F7 70%, transparent 100%)",
+              mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+              WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+            }}
+          />
+        </div>
+        {/* Center icon */}
+        <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-card border border-border/50">
+          <Activity className="h-9 w-9 text-primary animate-pulse-glow" />
         </div>
       </div>
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-3">
-          <Skeleton className="shimmer h-48 w-full rounded-2xl" />
-        </div>
-        <div className="lg:col-span-2">
-          <Skeleton className="shimmer h-40 w-full rounded-2xl" />
-        </div>
-        <Skeleton className="shimmer h-40 w-full rounded-2xl" />
-        <div className="lg:col-span-3">
-          <Skeleton className="shimmer h-64 w-full rounded-2xl" />
+
+      {/* Analyzing text */}
+      <p className="mt-8 text-xl font-semibold">{t("analyze.loading")}</p>
+
+      {/* URL + strategy */}
+      <div className="mt-3 flex items-center gap-2 rounded-full bg-secondary/60 px-4 py-1.5">
+        {strategy === "mobile" ? (
+          <Smartphone className="h-3.5 w-3.5 text-muted-foreground" />
+        ) : (
+          <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+        )}
+        <span className="max-w-xs truncate text-sm text-muted-foreground">{url}</span>
+      </div>
+
+      {/* Step indicators */}
+      <div className="mt-8 space-y-3">
+        {ANALYSIS_STEPS.map((s, i) => {
+          const StepIcon = s.icon;
+          const isActive = i === step;
+          const isDone = i < step;
+          return (
+            <div
+              key={s.key}
+              className={`flex items-center gap-3 transition-all duration-500 ${
+                isActive ? "text-foreground" : isDone ? "text-primary" : "text-muted-foreground/40"
+              }`}
+            >
+              {/* Step dot / check */}
+              <div
+                className={`flex h-7 w-7 items-center justify-center rounded-full border transition-all duration-500 ${
+                  isActive
+                    ? "border-primary bg-primary/10 scale-110"
+                    : isDone
+                    ? "border-primary/50 bg-primary/5"
+                    : "border-border/50 bg-transparent"
+                }`}
+              >
+                {isDone ? (
+                  <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <StepIcon className={`h-3.5 w-3.5 ${isActive ? "text-primary" : ""}`} />
+                )}
+              </div>
+              <span className={`text-sm font-medium ${isActive ? "text-foreground" : ""}`}>
+                {t(s.key)}
+              </span>
+              {isActive && (
+                <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Compact skeleton preview */}
+      <div className="mt-10 w-full max-w-2xl opacity-30">
+        <div className="grid gap-3 grid-cols-3">
+          <Skeleton className="shimmer h-10 rounded-xl" />
+          <Skeleton className="shimmer h-10 rounded-xl" />
+          <Skeleton className="shimmer h-10 rounded-xl" />
+          <Skeleton className="shimmer col-span-2 h-8 rounded-xl" />
+          <Skeleton className="shimmer h-8 rounded-xl" />
         </div>
       </div>
     </div>

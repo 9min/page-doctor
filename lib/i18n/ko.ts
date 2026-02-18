@@ -29,6 +29,7 @@ const ko = {
   "home.recent.mobile": "모바일",
   "home.recent.desktop": "데스크톱",
   "home.recent.perf": "성능",
+  "home.recent.deleteAll": "전체 삭제",
 
   // URL Input
   "input.placeholder": "URL을 입력하세요 (예: example.com)",
@@ -185,6 +186,12 @@ const ko = {
   "offline.title": "오프라인 상태입니다",
   "offline.description": "인터넷 연결을 확인한 후 다시 시도해주세요.",
   "offline.retry": "다시 시도",
+
+  // Analyze Steps
+  "analyze.step.connect": "웹사이트 연결 중",
+  "analyze.step.performance": "성능 측정 중",
+  "analyze.step.accessibility": "접근성 검사 중",
+  "analyze.step.report": "리포트 생성 중",
 
   // Error
   "error.request": "요청에 실패했습니다.",
