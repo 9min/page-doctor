@@ -51,7 +51,7 @@ export function Footer() {
             </Link>
           </div>
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} PageDoctor. All rights reserved.
+            {t("footer.copyright", { year: new Date().getFullYear() })}
           </p>
         </div>
       </div>

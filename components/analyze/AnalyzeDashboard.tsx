@@ -80,7 +80,7 @@ export function AnalyzeDashboard() {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
         <div className="glass-card p-8 text-center">
-          <Globe className="mx-auto h-10 w-10 text-muted-foreground" />
+          <Globe className="mx-auto h-10 w-10 text-muted-foreground" aria-hidden="true" />
           <p className="mt-3 text-muted-foreground">
             {t("analyze.noUrl")}
           </p>
