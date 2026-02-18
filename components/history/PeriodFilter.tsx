@@ -14,6 +14,7 @@ export function PeriodFilter({ selectedDays, onSelect }: PeriodFilterProps) {
       {PERIOD_FILTERS.map((filter) => (
         <button
           key={filter.days}
+          type="button"
           onClick={() => onSelect(filter.days)}
           className={cn(
             "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",

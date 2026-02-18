@@ -36,9 +36,9 @@ export function HistoryTable({ records, onDelete }: HistoryTableProps) {
             </tr>
           </thead>
           <tbody>
-            {records.map((record) => (
+            {records.map((record, index) => (
               <tr
-                key={record.id}
+                key={record.id ?? index}
                 className="border-b border-border/50 transition-colors hover:bg-muted/30"
               >
                 <td className="px-4 py-3 whitespace-nowrap">
