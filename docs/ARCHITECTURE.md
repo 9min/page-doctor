@@ -2,7 +2,7 @@
 
 ## 1. 시스템 아키텍처 개요
 
-PageDoctor는 **Next.js 15 (App Router)** 기반의 웹 애플리케이션으로, Vercel에 배포되며 Google의 PageSpeed Insights API와 CrUX API를 활용하여 웹 성능을 측정합니다.
+PageDoctor는 **Next.js 16 (App Router)** 기반의 웹 애플리케이션으로, Vercel에 배포되며 Google의 PageSpeed Insights API와 CrUX API를 활용하여 웹 성능을 측정합니다.
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -11,7 +11,7 @@ PageDoctor는 **Next.js 15 (App Router)** 기반의 웹 애플리케이션으로
 │  ┌─────────────────────┐  ┌────────────────────────┐  │
 │  │   Frontend (SSR/CSR) │  │  API Routes (Serverless)│  │
 │  │                     │  │                        │  │
-│  │  Next.js 15         │  │  /api/analyze          │  │
+│  │  Next.js 16         │  │  /api/analyze          │  │
 │  │  React 19           │  │  /api/crux             │  │
 │  │  Tailwind CSS v4    │  │  /api/report           │  │
 │  │  shadcn/ui          │  │                        │  │
@@ -28,6 +28,7 @@ PageDoctor는 **Next.js 15 (App Router)** 기반의 웹 애플리케이션으로
    │  (Dexie.js)       │   │  ├ PageSpeed Insights v5  │
    │  - 분석 히스토리    │   │  └ Chrome UX Report      │
    │  - 사용자 설정      │   │                          │
+   │  - 스케줄          │   │                          │
    └──────────────────┘   └──────────────────────────┘
 ```
 
@@ -47,14 +48,17 @@ PageDoctor는 **Next.js 15 (App Router)** 기반의 웹 애플리케이션으로
 
 ```
 app/
-├── layout.tsx              ← 루트 레이아웃 (Header, Footer, ThemeProvider)
+├── layout.tsx              ← 루트 레이아웃 (Header, Footer, ThemeProvider, LocaleProvider)
 ├── page.tsx                ← / (홈: Hero + URL 입력 + 최근 분석)
+├── icon.svg                ← 파비콘 (Lucide Activity, 브랜드 블루)
 ├── analyze/
 │   └── page.tsx            ← /analyze?url=... (분석 결과 대시보드)
 ├── history/
 │   └── page.tsx            ← /history (성능 히스토리 차트)
 ├── compare/
 │   └── page.tsx            ← /compare (경쟁사 비교 분석)
+├── offline/
+│   └── page.tsx            ← /offline (PWA 오프라인 폴백)
 ├── api/
 │   ├── analyze/
 │   │   └── route.ts        ← POST /api/analyze (PSI API 프록시)
@@ -74,6 +78,7 @@ app/
 | `/analyze` | CSR (Client Component) | URL 파라미터 기반 동적 분석, IndexedDB 접근 |
 | `/history` | CSR (Client Component) | IndexedDB 데이터 조회, 차트 렌더링 |
 | `/compare` | CSR (Client Component) | 다중 URL 동시 분석, 동적 상호작용 |
+| `/offline` | SSR (Server Component) | PWA 오프라인 폴백 페이지 |
 
 ## 3. 프론트엔드 아키텍처
 
@@ -82,25 +87,32 @@ app/
 ```
 app/layout.tsx (Server Component)
 ├── ThemeProvider (Client)
-├── Header (Client) ─── Navigation + ThemeToggle
+├── LocaleProvider (Client) ─── i18n 다국어 Context
+├── TooltipProvider (Client)
+├── ScheduleRunner (Client) ─── 오버듀 스케줄 자동 실행
+├── ServiceWorkerRegistrar (Client) ─── PWA 서비스 워커 등록
+├── Header (Client) ─── Navigation + ThemeToggle + LocaleSwitcher
 ├── {children} ─── 페이지별 콘텐츠
 └── Footer (Server)
 
 app/page.tsx (홈)
 ├── Hero (Server)
 ├── UrlInput (Client) ─── URL 입력 + 전략 선택 + 분석 버튼
-└── RecentAnalyses (Client) ─── IndexedDB 최근 분석 목록
+├── RecentAnalyses (Client) ─── IndexedDB 최근 분석 목록 (개별/전체 삭제)
+└── ScheduledAnalyses (Client) ─── 예약된 정기 분석 목록
 
 app/analyze/page.tsx (분석 결과)
 ├── AnalyzeDashboard (Client)
+│   ├── ActionBar ─── [ShareButton] [ScheduleDialog] [BudgetDialog] [PdfReportButton]
 │   ├── ScoreOverview ─── 4개 카테고리 게이지 차트
+│   │   ├── ScoreGauge ─── 개별 원형 게이지
+│   │   └── BudgetIndicator ─── 버짓 달성/미달 표시
 │   ├── CoreWebVitals ─── LCP / INP / CLS 카드
 │   │   ├── MetricCard ─── 개별 지표 + 등급 배지
-│   │   └── LabFieldToggle ─── Lab / Field 데이터 전환
-│   ├── AuditList ─── 개선 제안 목록
-│   │   └── AuditItem ─── 개별 제안 (우선순위 + 상세)
+│   │   └── Tab 전환 ─── Lab / Field 데이터
 │   ├── ScoreSummaryCard ─── 종합 점수 요약
-│   └── ActionBar ─── [PDF 다운로드] [히스토리 저장]
+│   └── AuditList ─── 개선 제안 목록
+│       └── AuditItem ─── 개별 제안 (우선순위 + 상세)
 
 app/history/page.tsx (히스토리)
 ├── UrlSelector ─── URL 선택 드롭다운
@@ -126,7 +138,8 @@ globals.css
 ├── @theme                       ← CSS 변수 (색상, 라운딩, 간격)
 ├── @layer base                  ← 다크모드 기본 + 글래스모피즘 유틸
 ├── @layer components            ← 커스텀 컴포넌트 스타일
-├── @keyframes                   ← 애니메이션 (fade-in, slide-up, pulse-glow)
+├── @keyframes                   ← 애니메이션 (fade-in, slide-up, pulse-glow,
+│                                   analyze-pulse, analyze-spin, shimmer)
 └── @media (prefers-reduced-motion) ← 접근성
 
 shadcn/ui 컴포넌트
@@ -153,6 +166,7 @@ shadcn/ui 컴포넌트
 /analyze (AnalyzeDashboard)
   ├── useAnalysis()     → { result, isLoading, error, analyze }
   ├── useHistory()      → { saveResult, getHistory }
+  ├── useBudget()       → { budget, saveBudget, deleteBudget }
   └── URL searchParams  → url, strategy
 
 /history
@@ -163,8 +177,12 @@ shadcn/ui 컴포넌트
   ├── useCompare()      → { results, isLoading, compareUrls }
   └── useState()        → urls[]
 
+홈 (/)
+  └── useSchedule()     → { schedules, deleteSchedule }
+
 글로벌 상태:
-  └── ThemeProvider     → { theme, toggleTheme } (Context API)
+  ├── ThemeProvider     → { theme, toggleTheme } (Context API)
+  └── LocaleProvider    → { locale, setLocale, t } (Context API)
 ```
 
 ## 4. 백엔드 아키텍처 (API Routes)
@@ -199,36 +217,43 @@ PSI API를 호출하고 응답을 프론트엔드에 최적화된 형태로 가�
        &category=PERFORMANCE&category=ACCESSIBILITY
        &category=BEST_PRACTICES&category=SEO
   3. 응답 정규화 (필요한 데이터만 추출)
-  4. 가공된 결과 반환
+  4. INP 폴백: Lighthouse 랩 데이터에 없으면 loadingExperience 필드 데이터 사용
+  5. 가공된 결과 반환
 
 응답:
 {
-  "url": "https://example.com",
-  "fetchedAt": "2025-01-01T00:00:00Z",
-  "strategy": "mobile",
-  "scores": {
-    "performance": 85,
-    "accessibility": 92,
-    "bestPractices": 88,
-    "seo": 95
-  },
-  "webVitals": {
-    "lcp": { "value": 2.4, "unit": "s", "rating": "needs-improvement" },
-    "inp": { "value": 180, "unit": "ms", "rating": "good" },
-    "cls": { "value": 0.05, "unit": "", "rating": "good" }
-  },
-  "audits": [
-    {
-      "id": "render-blocking-resources",
-      "title": "렌더 차단 리소스 제거",
-      "score": 0.4,
-      "priority": "high",
-      "savings": { "ms": 1200 },
-      "description": "..."
-    }
-  ]
+  "result": {
+    "url": "https://example.com",
+    "strategy": "mobile",
+    "analyzedAt": "2025-01-01T00:00:00Z",
+    "scores": {
+      "performance": 85,
+      "accessibility": 92,
+      "best-practices": 88,
+      "seo": 95
+    },
+    "webVitals": {
+      "lcp": 2400,
+      "inp": 180,
+      "cls": 0.05
+    },
+    "audits": [
+      {
+        "id": "render-blocking-resources",
+        "title": "Eliminate render-blocking resources",
+        "description": "...",
+        "score": 0.4,
+        "displayValue": "Potential savings of 1,200 ms",
+        "category": "performance",
+        "impact": "high"
+      }
+    ],
+    "screenshot": "data:image/jpeg;base64,..."
+  }
 }
 ```
+
+> **참고**: `analyzedAt`은 PSI API에서 반환하는 Lighthouse 실행 시각(`lighthouseResult.fetchTime`)을 매핑한 필드입니다.
 
 #### POST /api/crux
 
@@ -244,15 +269,16 @@ Chrome UX Report API를 호출하여 실제 사용자 필드 데이터를 조회
   1. CrUX API 호출 (API 키 서버사이드 보호)
      POST https://chromeuxreport.googleapis.com/v1/records:queryRecord
   2. 필드 데이터 정규화
-  3. 데이터 없으면 { available: false } 반환
+  3. 데이터 없으면 { hasData: false } 반환
 
 응답:
 {
-  "available": true,
-  "webVitals": {
-    "lcp": { "p75": 2.1, "rating": "needs-improvement", "distributions": {...} },
-    "inp": { "p75": 150, "rating": "good", "distributions": {...} },
-    "cls": { "p75": 0.08, "rating": "good", "distributions": {...} }
+  "result": {
+    "url": "https://example.com",
+    "hasData": true,
+    "lcp": { "p75": 2100, "rating": "needs-improvement" },
+    "inp": { "p75": 150, "rating": "good" },
+    "cls": { "p75": 0.08, "rating": "good" }
   }
 }
 ```
@@ -265,18 +291,17 @@ PDF 리포트 생성을 위한 데이터를 가공합니다.
 요청:
 {
   "url": "https://example.com",
-  "analysisResult": { ... },
-  "includeAudits": true
+  "analysisResult": { ... }
 }
 
 응답:
 {
-  "reportData": {
-    "title": "PageDoctor 성능 리포트",
-    "generatedAt": "2025-01-01T00:00:00Z",
+  "report": {
     "url": "https://example.com",
-    "summary": { ... },
-    "topAudits": [ ... ]  // 상위 10개 개선 제안
+    "analyzedAt": "2025-01-01T00:00:00Z",
+    "scores": { ... },
+    "webVitals": { ... },
+    "topAudits": [ ... ]
   }
 }
 ```
@@ -301,7 +326,7 @@ AnalyzeDashboard (useAnalysis hook)
 Google PSI API → Lighthouse 실행 (10-20초)
     │
     ▼
-응답 정규화 → 프론트엔드 반환
+응답 정규화 (INP: lab → loadingExperience 폴백) → 프론트엔드 반환
     │
     ▼
 AnalyzeDashboard
@@ -309,6 +334,12 @@ AnalyzeDashboard
     ├── CoreWebVitals: LCP/INP/CLS 카드 렌더링
     ├── AuditList: 개선 제안 목록 렌더링
     └── useHistory().saveResult(): IndexedDB에 자동 저장
+    │
+    ▼ (비동기 병렬)
+CrUX 데이터 요청 → POST /api/crux { url }
+    │
+    ▼
+CoreWebVitals: Field Data 탭에서 CrUX p75 표시
 ```
 
 ### 5.2 히스토리 플로우
@@ -382,43 +413,31 @@ blob:// URL 생성 → 브라우저 다운로드
 ### 데이터베이스 정의
 
 ```typescript
-// db.ts
+// lib/db.ts
 import Dexie, { type Table } from 'dexie';
-
-interface AnalysisRecord {
-  id?: number;              // 자동 증가 PK
-  url: string;              // 분석 대상 URL
-  strategy: 'mobile' | 'desktop';
-  fetchedAt: string;        // ISO 8601 타임스탬프
-  scores: {
-    performance: number;
-    accessibility: number;
-    bestPractices: number;
-    seo: number;
-  };
-  webVitals: {
-    lcp: { value: number; unit: string; rating: string };
-    inp: { value: number; unit: string; rating: string };
-    cls: { value: number; unit: string; rating: string };
-  };
-  audits: Audit[];          // 개선 제안 목록
-}
-
-interface UserSettings {
-  id: string;               // 'default'
-  theme: 'dark' | 'light';
-  defaultStrategy: 'mobile' | 'desktop';
-}
 
 class PageDoctorDB extends Dexie {
   analyses!: Table<AnalysisRecord>;
-  settings!: Table<UserSettings>;
+  settings!: Table<SettingRecord>;
+  schedules!: Table<ScheduleRecord>;
 
   constructor() {
     super('PageDoctorDB');
+
     this.version(1).stores({
-      analyses: '++id, url, strategy, fetchedAt, [url+strategy]',
-      settings: 'id'
+      analyses: '++id, url, strategy, analyzedAt, [url+strategy]',
+      settings: 'key',
+    });
+
+    this.version(2).stores({
+      analyses: '++id, url, strategy, analyzedAt, [url+strategy], [url+analyzedAt]',
+      settings: 'key',
+    });
+
+    this.version(3).stores({
+      analyses: '++id, url, strategy, analyzedAt, [url+strategy], [url+analyzedAt]',
+      settings: 'key',
+      schedules: '++id, url, [url+strategy], nextRunAt, enabled',
     });
   }
 }
@@ -426,16 +445,22 @@ class PageDoctorDB extends Dexie {
 export const db = new PageDoctorDB();
 ```
 
-### 인덱스 설계
+### 테이블 및 인덱스 설계
 
 | 테이블 | 인덱스 | 용도 |
 |--------|--------|------|
 | analyses | `++id` | 자동 증가 PK |
 | analyses | `url` | URL별 히스토리 조회 |
 | analyses | `strategy` | 전략별 필터링 |
-| analyses | `fetchedAt` | 기간별 필터링 (정렬) |
+| analyses | `analyzedAt` | 기간별 필터링 (정렬) |
 | analyses | `[url+strategy]` | 복합 인덱스: URL+전략 조합 조회 |
-| settings | `id` | 설정 단일 레코드 ('default') |
+| analyses | `[url+analyzedAt]` | 복합 인덱스: URL별 시계열 조회 |
+| settings | `key` | 설정 키 (테마, 버짓 등) |
+| schedules | `++id` | 자동 증가 PK |
+| schedules | `url` | URL별 스케줄 조회 |
+| schedules | `[url+strategy]` | URL+전략 조합 스케줄 조회 |
+| schedules | `nextRunAt` | 다음 실행 시각 순 정렬 |
+| schedules | `enabled` | 활성/비활성 필터링 |
 
 ### 데이터 크기 추정
 
@@ -457,6 +482,7 @@ export const db = new PageDoctorDB();
 - Google 서버에서 Lighthouse 실행
 - 일관된 네트워크/디바이스 조건 (Moto G Power, 느린 4G)
 - 모든 URL에 대해 즉시 측정 가능
+- INP는 랩 데이터에서 측정 불가 → `loadingExperience` 필드 데이터를 폴백으로 사용
 
 ```
 GET https://www.googleapis.com/pagespeedonline/v5/runPagespeed
@@ -492,6 +518,7 @@ POST https://chromeuxreport.googleapis.com/v1/records:queryRecord
 | 갱신 주기 | 실시간 (요청 시) | 28일 롤링 |
 | 데이터 가용성 | 모든 URL | 트래픽 충분한 URL만 |
 | 네트워크 조건 | 고정 (느린 4G) | 실제 사용자 네트워크 |
+| INP 측정 | 불가 (폴백 사용) | 가능 (실제 인터랙션) |
 | 용도 | 개발 중 디버깅 | 실사용자 경험 파악 |
 
 ## 8. 차트 전략 (Recharts)
@@ -516,7 +543,31 @@ Recharts 기본 설정:
 └── 등급별 색상 매핑            ← good(녹색), needs-improvement(주황), poor(빨강)
 ```
 
-## 9. 배포 (Vercel)
+## 9. 다국어 (i18n) 아키텍처
+
+### 구조
+
+```text
+lib/i18n/
+├── ko.ts          ← 한국어 딕셔너리 (기본 언어, TranslationKey 타입 정의)
+├── en.ts          ← 영어 딕셔너리
+└── index.ts       ← barrel export + LOCALE_LABELS, DEFAULT_LOCALE
+
+hooks/
+└── useTranslation.ts  ← { locale, setLocale, t } 훅
+
+components/shared/
+├── LocaleProvider.tsx  ← Context Provider (localStorage 영속화)
+└── LocaleSwitcher.tsx  ← KO/EN 토글 버튼
+```
+
+### 규칙
+
+- 모든 사용자 대면 텍스트는 `t("key")` 번역 함수 사용 (하드코딩 금지)
+- 새 UI 텍스트 추가 시 반드시 `ko.ts`, `en.ts` 양쪽에 키 추가
+- 서버 메타데이터(title, description)는 한국어 고정 (SSR이므로 t() 사용 불가)
+
+## 10. 배포 (Vercel)
 
 ### Vercel 설정
 
@@ -553,28 +604,29 @@ Secondary: GitHub Release (선택)
 | 함수 메모리 | 1024MB | API Route는 HTTP 프록시만 수행하므로 충분 |
 | 번들 크기 | 50MB | @react-pdf/renderer는 클라이언트 전용, 서버 번들에 미포함 |
 
-## 10. 의존성 맵
+## 11. 의존성 맵
 
 ### 프론트엔드
 
-```
-next 15 ─── react 19 ─── react-dom 19
+```text
+next 16 ─── react 19 ─── react-dom 19
 tailwindcss 4 ─── @tailwindcss/postcss 4
 shadcn/ui ──── (각 컴포넌트 개별 설치)
-           ├── @radix-ui/react-* (접근성 프리미티브)
+           ├── radix-ui (접근성 프리미티브)
            ├── class-variance-authority (스타일 변형)
            ├── clsx + tailwind-merge (클래스 조합)
            └── lucide-react (아이콘)
-recharts 2 ──── d3-* (차트 연산)
-dexie 4 ──────── (IndexedDB 래퍼)
+next-themes ─────── (다크/라이트 모드)
+recharts 3 ──────── d3-* (차트 연산)
+dexie 4 ──────────── (IndexedDB 래퍼)
 @react-pdf/renderer 4 ── (PDF 생성)
 typescript 5
 ```
 
 ### 개발 의존성
 
-```
+```text
 @types/react, @types/node
-eslint ─── eslint-config-next
-prettier
+eslint 9 ─── eslint-config-next
+tw-animate-css (Tailwind 애니메이션)
 ```

@@ -24,93 +24,93 @@
 
 ### 3.1 URL 분석
 
-- [ ] URL 입력 필드 + 분석 시작 버튼
-- [ ] URL 유효성 검사 (프로토콜 자동 추가)
-- [ ] 분석 진행 상태 표시 (스켈레톤 UI + 프로그레스)
-- [ ] 최근 분석 URL 자동완성 (IndexedDB에서 조회)
-- [ ] 모바일/데스크톱 전략 선택 (기본: 모바일)
+- [x] URL 입력 필드 + 분석 시작 버튼
+- [x] URL 유효성 검사 (프로토콜 자동 추가)
+- [x] 분석 진행 상태 표시 (스켈레톤 UI + 단계별 인디케이터)
+- [x] 최근 분석 URL 목록 (IndexedDB에서 조회, 개별/전체 삭제)
+- [x] 모바일/데스크톱 전략 선택 (기본: 모바일)
 
 ### 3.2 Core Web Vitals 대시보드
 
-- [ ] LCP (Largest Contentful Paint) - 로딩 성능
-- [ ] INP (Interaction to Next Paint) - 상호작용 응답성
-- [ ] CLS (Cumulative Layout Shift) - 시각적 안정성
-- [ ] 각 지표별 Good / Needs Improvement / Poor 등급 표시
-- [ ] 등급별 컬러 배지 (녹색/주황/빨강)
-- [ ] Lab Data (PSI) + Field Data (CrUX) 탭 전환
+- [x] LCP (Largest Contentful Paint) - 로딩 성능
+- [x] INP (Interaction to Next Paint) - 상호작용 응답성
+- [x] CLS (Cumulative Layout Shift) - 시각적 안정성
+- [x] 각 지표별 Good / Needs Improvement / Poor 등급 표시
+- [x] 등급별 컬러 배지 (녹색/주황/빨강)
+- [x] Lab Data (PSI) + Field Data (CrUX) 탭 전환
 
 ### 3.3 성능 점수 개요
 
-- [ ] Lighthouse 카테고리 점수 (Performance, Accessibility, Best Practices, SEO)
-- [ ] 원형 게이지 차트 (0-100)
-- [ ] 점수별 등급 색상 (0-49 빨강, 50-89 주황, 90-100 녹색)
-- [ ] 전체 점수 요약 카드
+- [x] Lighthouse 카테고리 점수 (Performance, Accessibility, Best Practices, SEO)
+- [x] 원형 게이지 차트 (0-100)
+- [x] 점수별 등급 색상 (0-49 빨강, 50-89 주황, 90-100 녹색)
+- [x] 전체 점수 요약 카드
 
 ### 3.4 성능 히스토리
 
-- [ ] URL별 분석 결과 자동 저장 (IndexedDB)
-- [ ] 시계열 라인 차트 (날짜별 점수 변화)
-- [ ] Core Web Vitals 트렌드 차트
-- [ ] 기간 필터 (7일, 30일, 90일, 전체)
-- [ ] 데이터 내보내기 (JSON)
+- [x] URL별 분석 결과 자동 저장 (IndexedDB)
+- [x] 시계열 라인 차트 (날짜별 점수 변화)
+- [x] Core Web Vitals 트렌드 차트
+- [x] 기간 필터 (7일, 30일, 90일, 전체)
+- [x] 데이터 내보내기 (JSON)
 
 ### 3.5 경쟁사 비교
 
-- [ ] 최대 5개 URL 동시 입력
-- [ ] 병렬 분석 실행 + 개별 진행 상태
-- [ ] 레이더 차트 비교 (Performance, A11y, BP, SEO)
-- [ ] Core Web Vitals 나란히 비교 테이블
-- [ ] 순위 표시 (종합 + 카테고리별)
+- [x] 최대 5개 URL 동시 입력
+- [x] 병렬 분석 실행 + 개별 진행 상태
+- [x] 레이더 차트 비교 (Performance, A11y, BP, SEO)
+- [x] Core Web Vitals 나란히 비교 테이블
+- [x] 순위 표시 (종합 + 카테고리별)
 
 ### 3.6 개선 제안
 
-- [ ] Lighthouse Audits 기반 개선 항목 목록
-- [ ] 우선순위 분류 (High / Medium / Low)
-- [ ] 카테고리별 필터 (Performance, A11y, BP, SEO)
-- [ ] 예상 절약 시간/크기 표시 (PSI API 제공 데이터)
-- [ ] 각 항목별 상세 설명 + 해결 가이드 링크
+- [x] Lighthouse Audits 기반 개선 항목 목록
+- [x] 우선순위 분류 (High / Medium / Low)
+- [x] 카테고리별 필터 (Performance, A11y, BP, SEO)
+- [x] 예상 절약 시간/크기 표시 (PSI API 제공 데이터)
+- [x] 각 항목별 상세 설명 + 해결 가이드 링크
 
 ### 3.7 PDF 리포트
 
-- [ ] 분석 결과 PDF 자동 생성 (@react-pdf/renderer)
-- [ ] 포함 내용: 점수 요약, Core Web Vitals, 개선 제안 Top 10
-- [ ] PageDoctor 브랜딩 헤더/푸터
-- [ ] 생성 날짜 + URL 정보
-- [ ] 클라이언트 사이드 PDF 생성 (서버 불필요)
+- [x] 분석 결과 PDF 자동 생성 (@react-pdf/renderer)
+- [x] 포함 내용: 점수 요약, Core Web Vitals, 개선 제안 Top 10
+- [x] PageDoctor 브랜딩 헤더/푸터
+- [x] 생성 날짜 + URL 정보
+- [x] 클라이언트 사이드 PDF 생성 (서버 불필요)
 
 ### 3.8 대시보드 레이아웃
 
-- [ ] 벤토 그리드 기반 대시보드
-- [ ] 반응형 레이아웃 (데스크톱/태블릿/모바일)
-- [ ] 다크모드 기본 + 라이트모드 전환
-- [ ] 글래스모피즘 포인트 (카드, 사이드바)
-- [ ] 부드러운 전환 애니메이션
+- [x] 벤토 그리드 기반 대시보드
+- [x] 반응형 레이아웃 (데스크톱/태블릿/모바일)
+- [x] 다크모드 기본 + 라이트모드 전환
+- [x] 글래스모피즘 포인트 (카드, 사이드바)
+- [x] 부드러운 전환 애니메이션
 
 ## 4. 로드맵
 
-### Phase 1 - 핵심 기능 (MVP)
+### Phase 1 - 핵심 기능 (MVP) ✅
 
-- [ ] URL 분석 + Core Web Vitals 대시보드
-- [ ] Lighthouse 카테고리 점수 표시
-- [ ] 개선 제안 목록
-- [ ] 다크모드 벤토 그리드 레이아웃
-- [ ] IndexedDB 히스토리 저장
+- [x] URL 분석 + Core Web Vitals 대시보드
+- [x] Lighthouse 카테고리 점수 표시
+- [x] 개선 제안 목록
+- [x] 다크모드 벤토 그리드 레이아웃
+- [x] IndexedDB 히스토리 저장
 
-### Phase 2 - 고급 기능
+### Phase 2 - 고급 기능 ✅
 
-- [ ] 성능 히스토리 시계열 차트
-- [ ] 경쟁사 비교 분석 (레이더 차트)
-- [ ] PDF 리포트 생성
-- [ ] CrUX API 필드 데이터 통합
-- [ ] 데이터 내보내기 (JSON)
+- [x] 성능 히스토리 시계열 차트
+- [x] 경쟁사 비교 분석 (레이더 차트)
+- [x] PDF 리포트 생성
+- [x] CrUX API 필드 데이터 통합
+- [x] 데이터 내보내기 (JSON)
 
-### Phase 3 - 확장
+### Phase 3 - 확장 ✅
 
-- [ ] 정기 분석 스케줄링 (브라우저 알림)
-- [ ] 성능 버짓 설정 + 경고
-- [ ] 팀 공유 링크 (결과 URL 공유)
-- [ ] 다국어 지원 (영어)
-- [ ] PWA 오프라인 지원
+- [x] 정기 분석 스케줄링 (브라우저 알림)
+- [x] 성능 버짓 설정 + 경고
+- [x] 팀 공유 링크 (결과 URL 공유)
+- [x] 다국어 지원 (영어)
+- [x] PWA 오프라인 지원
 
 ## 5. 비기능 요구사항
 
@@ -126,7 +126,7 @@
 
 ## 6. UI 흐름
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │ Header (로고 + 네비게이션 + 다크모드 토글)              │
 ├──────────────────────────────────────────────────────┤

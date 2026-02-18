@@ -6,7 +6,7 @@ PageDoctor는 웹 페이지 성능 검사/모니터링 대시보드 웹 애플�
 
 ## 기술 스택
 
-- **프레임워크**: Next.js 15 (App Router), React 19, TypeScript 5
+- **프레임워크**: Next.js 16 (App Router), React 19, TypeScript 5
 - **스타일링**: Tailwind CSS v4, shadcn/ui
 - **차트**: Recharts
 - **데이터 저장**: Dexie.js (IndexedDB)
@@ -24,6 +24,7 @@ page-doctor/
 │   ├── layout.tsx                  # 루트 레이아웃 (Header, Footer, ThemeProvider, LocaleProvider)
 │   ├── page.tsx                    # / (홈: Hero + URL 입력 + 최근 분석)
 │   ├── globals.css                 # 글로벌 스타일 + 테마 + 애니메이션
+│   ├── icon.svg                    # 파비콘 (Lucide Activity, 브랜드 블루)
 │   ├── not-found.tsx               # 404 페이지
 │   ├── analyze/
 │   │   └── page.tsx                # /analyze?url=...&strategy=... (분석 결과)
@@ -68,7 +69,10 @@ page-doctor/
 │   │   ├── AuditList.tsx           # 개선 제안 목록
 │   │   ├── AuditItem.tsx           # 개별 제안 항목
 │   │   ├── PdfReportButton.tsx     # PDF 다운로드 버튼
-│   │   └── ScheduleDialog.tsx     # 정기 분석 스케줄 설정 Dialog
+│   │   ├── ShareButton.tsx         # 분석 결과 URL 클립보드 복사
+│   │   ├── BudgetDialog.tsx        # 성능 버짓 설정 Dialog
+│   │   ├── BudgetIndicator.tsx     # 버짓 달성/미달 표시 배지
+│   │   └── ScheduleDialog.tsx      # 정기 분석 스케줄 설정 Dialog
 │   ├── history/                    # 히스토리 컴포넌트
 │   │   ├── UrlSelector.tsx         # URL 선택 드롭다운
 │   │   ├── PeriodFilter.tsx        # 기간 필터
@@ -94,6 +98,7 @@ page-doctor/
 │   ├── useCompare.ts               # 다중 URL 비교 분석
 │   ├── useTheme.ts                 # 다크/라이트 모드 관리
 │   ├── useTranslation.ts           # i18n 번역 훅 (locale, setLocale, t)
+│   ├── useBudget.ts                # 성능 버짓 CRUD (URL별 IndexedDB 저장)
 │   └── useSchedule.ts              # 스케줄 CRUD + 목록 조회
 ├── lib/                            # 유틸리티
 │   ├── db.ts                       # Dexie.js 데이터베이스 정의 (v3: analyses, settings, schedules)
