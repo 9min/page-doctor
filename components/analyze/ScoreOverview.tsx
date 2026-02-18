@@ -1,11 +1,12 @@
 "use client";
 
-import type { CategoryScores } from "@/types";
+import type { CategoryScores, PerformanceBudget } from "@/types";
 import { CATEGORY_LABELS } from "@/lib/constants";
 import { ScoreGauge } from "./ScoreGauge";
 
 interface ScoreOverviewProps {
   scores: CategoryScores;
+  budget?: PerformanceBudget | null;
 }
 
 const CATEGORY_ORDER: Array<keyof CategoryScores> = [
@@ -15,7 +16,7 @@ const CATEGORY_ORDER: Array<keyof CategoryScores> = [
   "seo",
 ];
 
-export function ScoreOverview({ scores }: ScoreOverviewProps) {
+export function ScoreOverview({ scores, budget }: ScoreOverviewProps) {
   return (
     <div className="glass-card p-6">
       <h2 className="mb-6 text-lg font-semibold">카테고리 점수</h2>
@@ -25,6 +26,7 @@ export function ScoreOverview({ scores }: ScoreOverviewProps) {
             key={key}
             score={scores[key]}
             label={CATEGORY_LABELS[key]}
+            target={budget?.[key]}
           />
         ))}
       </div>

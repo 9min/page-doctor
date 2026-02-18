@@ -154,6 +154,17 @@ export interface SettingRecord {
 }
 
 // ------------------------------------------
+// Performance Budget
+// ------------------------------------------
+
+export interface PerformanceBudget {
+  performance?: number;
+  accessibility?: number;
+  "best-practices"?: number;
+  seo?: number;
+}
+
+// ------------------------------------------
 // UI State
 // ------------------------------------------
 

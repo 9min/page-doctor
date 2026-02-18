@@ -5,11 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { Loader2, Globe, Monitor, Smartphone } from "lucide-react";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import { useHistory } from "@/hooks/useHistory";
+import { useBudget } from "@/hooks/useBudget";
 import { fetchCruxData } from "@/lib/api";
 import { ScoreOverview } from "./ScoreOverview";
 import { CoreWebVitals } from "./CoreWebVitals";
 import { AuditList } from "./AuditList";
 import { PdfReportButton } from "./PdfReportButton";
+import { ShareButton } from "./ShareButton";
+import { BudgetDialog } from "./BudgetDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScoreRating } from "@/lib/utils";
 import { RATING_COLORS } from "@/lib/constants";
@@ -26,6 +29,7 @@ export function AnalyzeDashboard() {
 
   const { result, isLoading, error, analyze } = useAnalysis();
   const { saveResult } = useHistory();
+  const { budget, saveBudget, deleteBudget } = useBudget(result?.url ?? null);
   const savedRef = useRef(false);
   const [cruxResult, setCruxResult] = useState<CruxResult | null>(null);
   const cruxFetchedUrlRef = useRef<string | null>(null);
@@ -119,14 +123,22 @@ export function AnalyzeDashboard() {
             </span>
           </div>
         </div>
-        <PdfReportButton result={result} />
+        <div className="flex items-center gap-2">
+          <ShareButton />
+          <BudgetDialog
+            budget={budget}
+            onSave={saveBudget}
+            onDelete={deleteBudget}
+          />
+          <PdfReportButton result={result} />
+        </div>
       </div>
 
       {/* Bento Grid Layout */}
       <div className="grid gap-5 lg:grid-cols-3 stagger-fade">
         {/* Score Overview - spans full width */}
         <div className="lg:col-span-3">
-          <ScoreOverview scores={result.scores} />
+          <ScoreOverview scores={result.scores} budget={budget} />
         </div>
 
         {/* Core Web Vitals - spans 2 cols */}
