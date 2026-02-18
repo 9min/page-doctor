@@ -31,6 +31,7 @@ const en: Dictionary = {
   "home.recent.mobile": "Mobile",
   "home.recent.desktop": "Desktop",
   "home.recent.perf": "Perf",
+  "home.recent.deleteAll": "Delete all",
 
   // URL Input
   "input.placeholder": "Enter a URL (e.g. example.com)",
@@ -187,6 +188,12 @@ const en: Dictionary = {
   "offline.title": "You are offline",
   "offline.description": "Please check your internet connection and try again.",
   "offline.retry": "Try again",
+
+  // Analyze Steps
+  "analyze.step.connect": "Connecting to website",
+  "analyze.step.performance": "Measuring performance",
+  "analyze.step.accessibility": "Checking accessibility",
+  "analyze.step.report": "Generating report",
 
   // Error
   "error.request": "Request failed.",

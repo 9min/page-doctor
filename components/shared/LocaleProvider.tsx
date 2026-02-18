@@ -13,6 +13,14 @@ import { dictionaries, DEFAULT_LOCALE } from "@/lib/i18n";
 
 const STORAGE_KEY = "pageDoctor-locale";
 
+export interface LocaleContextValue {
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
+}
+
+export const LocaleContext = createContext<LocaleContextValue | null>(null);
+
 function getInitialLocale(): Locale {
   if (typeof window === "undefined") return DEFAULT_LOCALE;
   try {
@@ -23,14 +31,6 @@ function getInitialLocale(): Locale {
   }
   return DEFAULT_LOCALE;
 }
-
-export interface LocaleContextValue {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
-}
-
-export const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
