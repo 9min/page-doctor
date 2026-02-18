@@ -50,7 +50,7 @@ export function Footer() {
               {t("nav.compare")}
             </Link>
           </div>
-          <p className="text-xs text-muted-foreground/60">
+          <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} PageDoctor. All rights reserved.
           </p>
         </div>

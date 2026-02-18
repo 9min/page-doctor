@@ -60,8 +60,6 @@
   --animate-fade-in: fade-in 0.6s ease-out;
   --animate-slide-up: slide-up 0.6s ease-out;
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
-  --animate-scale-in: scale-in 0.4s ease-out;
-  --animate-float: float 6s ease-in-out infinite;
   --animate-analyze-pulse: analyze-pulse 2s ease-in-out infinite;
   --animate-analyze-spin: analyze-spin 8s linear infinite;
 }
@@ -82,7 +80,7 @@
   --secondary: #F1F5F9;
   --secondary-foreground: #0F172A;
   --muted: #F1F5F9;
-  --muted-foreground: #64748B;
+  --muted-foreground: #5B6B80;
   --accent: #F1F5F9;
   --accent-foreground: #0F172A;
   --destructive: #EF4444;
@@ -215,31 +213,6 @@
   background-clip: text;
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.bg-gradient-radial {
-  background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
-}
-
-.bg-gradient-mesh {
-  background:
-    radial-gradient(ellipse at 20% 10%, rgba(59, 130, 246, 0.20) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.14) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 70%, rgba(59, 130, 246, 0.10) 0%, transparent 50%);
-}
-
-:root .bg-gradient-mesh {
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 30%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
-}
-
 .bg-gradient-separator {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(168, 85, 247, 0.4), transparent);
@@ -255,14 +228,6 @@
 
 .glow-blue {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15), 0 0 60px rgba(59, 130, 246, 0.05);
-}
-
-.glow-success {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.15), 0 0 60px rgba(34, 197, 94, 0.05);
-}
-
-.glow-warning {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), 0 0 60px rgba(245, 158, 11, 0.05);
 }
 
 .glow-danger {
@@ -332,32 +297,12 @@
   }
 }
 
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 @keyframes pulse-glow {
   0%, 100% {
     opacity: 1;
   }
   50% {
     opacity: 0.7;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
   }
 }
 
