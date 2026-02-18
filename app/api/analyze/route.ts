@@ -24,19 +24,15 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.GOOGLE_PSI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "API 키가 설정되지 않았습니다.", code: "MISSING_API_KEY" },
-        { status: 500 }
-      );
-    }
 
     const params = new URLSearchParams({
       url,
       strategy,
-      key: apiKey,
       category: "PERFORMANCE",
     });
+    if (apiKey) {
+      params.set("key", apiKey);
+    }
     // URLSearchParams only keeps the last value for duplicate keys, so append extra categories
     params.append("category", "ACCESSIBILITY");
     params.append("category", "BEST_PRACTICES");
