@@ -21,7 +21,7 @@ PageDoctor는 웹 페이지 성능 검사/모니터링 대시보드 웹 애플�
 ```
 page-doctor/
 ├── app/                            # Next.js App Router
-│   ├── layout.tsx                  # 루트 레이아웃 (Header, Footer, ThemeProvider)
+│   ├── layout.tsx                  # 루트 레이아웃 (Header, Footer, ThemeProvider, LocaleProvider)
 │   ├── page.tsx                    # / (홈: Hero + URL 입력 + 최근 분석)
 │   ├── globals.css                 # 글로벌 스타일 + 테마 + 애니메이션
 │   ├── not-found.tsx               # 404 페이지
@@ -31,6 +31,8 @@ page-doctor/
 │   │   └── page.tsx                # /history (성능 히스토리 차트)
 │   ├── compare/
 │   │   └── page.tsx                # /compare (경쟁사 비교 분석)
+│   ├── offline/
+│   │   └── page.tsx                # /offline (PWA 오프라인 폴백)
 │   └── api/
 │       ├── analyze/
 │       │   └── route.ts            # POST /api/analyze (PSI API 프록시)
@@ -50,12 +52,13 @@ page-doctor/
 │   │   ├── sheet.tsx
 │   │   └── tooltip.tsx
 │   ├── layout/                     # 레이아웃 컴포넌트
-│   │   ├── Header.tsx              # 네비게이션 + 다크모드 토글
+│   │   ├── Header.tsx              # 네비게이션 + 다크모드 토글 + 언어 전환
 │   │   └── Footer.tsx              # 브랜딩 + 링크
 │   ├── home/                       # 홈 페이지 컴포넌트
 │   │   ├── Hero.tsx                # 히어로 섹션
 │   │   ├── UrlInput.tsx            # URL 입력 + 전략 선택 + 분석 버튼
-│   │   └── RecentAnalyses.tsx      # 최근 분석 URL 목록
+│   │   ├── RecentAnalyses.tsx      # 최근 분석 URL 목록
+│   │   └── ScheduledAnalyses.tsx   # 예약된 정기 분석 목록
 │   ├── analyze/                    # 분석 결과 컴포넌트
 │   │   ├── AnalyzeDashboard.tsx    # 분석 대시보드 메인
 │   │   ├── ScoreOverview.tsx       # 4개 카테고리 게이지 차트
@@ -64,7 +67,8 @@ page-doctor/
 │   │   ├── MetricCard.tsx          # 개별 지표 카드 + 등급 배지
 │   │   ├── AuditList.tsx           # 개선 제안 목록
 │   │   ├── AuditItem.tsx           # 개별 제안 항목
-│   │   └── PdfReportButton.tsx     # PDF 다운로드 버튼
+│   │   ├── PdfReportButton.tsx     # PDF 다운로드 버튼
+│   │   └── ScheduleDialog.tsx     # 정기 분석 스케줄 설정 Dialog
 │   ├── history/                    # 히스토리 컴포넌트
 │   │   ├── UrlSelector.tsx         # URL 선택 드롭다운
 │   │   ├── PeriodFilter.tsx        # 기간 필터
@@ -79,24 +83,43 @@ page-doctor/
 │   └── shared/                     # 공용 컴포넌트
 │       ├── ThemeProvider.tsx        # 다크/라이트 모드 Provider
 │       ├── ThemeToggle.tsx          # 테마 전환 토글
-│       └── RatingBadge.tsx          # Good/NI/Poor 등급 배지
+│       ├── RatingBadge.tsx          # Good/NI/Poor 등급 배지
+│       ├── LocaleProvider.tsx       # i18n 다국어 Context Provider
+│       ├── LocaleSwitcher.tsx       # KO/EN 언어 전환 토글
+│       ├── ScheduleRunner.tsx       # 앱 마운트 시 오버듀 스케줄 자동 실행
+│       └── ServiceWorkerRegistrar.tsx # PWA 서비스 워커 등록 (production)
 ├── hooks/                          # 커스텀 훅
 │   ├── useAnalysis.ts              # PSI 분석 요청 + 상태 관리
 │   ├── useHistory.ts               # IndexedDB 히스토리 CRUD
 │   ├── useCompare.ts               # 다중 URL 비교 분석
-│   └── useTheme.ts                 # 다크/라이트 모드 관리
+│   ├── useTheme.ts                 # 다크/라이트 모드 관리
+│   ├── useTranslation.ts           # i18n 번역 훅 (locale, setLocale, t)
+│   └── useSchedule.ts              # 스케줄 CRUD + 목록 조회
 ├── lib/                            # 유틸리티
-│   ├── db.ts                       # Dexie.js 데이터베이스 정의
+│   ├── db.ts                       # Dexie.js 데이터베이스 정의 (v3: analyses, settings, schedules)
 │   ├── api.ts                      # API 호출 래퍼 함수
 │   ├── utils.ts                    # 공통 유틸 (cn, 포맷터 등)
 │   ├── constants.ts                # 상수 (등급 임계값, 색상 등)
-│   └── pdf-template.tsx            # PDF 리포트 템플릿 (@react-pdf/renderer)
+│   ├── pdf-template.tsx            # PDF 리포트 템플릿 (@react-pdf/renderer)
+│   ├── schedule.ts                 # 스케줄 유틸 (calculateNextRunAt, isOverdue)
+│   ├── notifications.ts            # 브라우저 알림 유틸
+│   └── i18n/                       # 다국어 번역 시스템
+│       ├── ko.ts                   # 한국어 딕셔너리 (기본 언어, TranslationKey 타입 정의)
+│       ├── en.ts                   # 영어 딕셔너리
+│       └── index.ts                # barrel export + LOCALE_LABELS, DEFAULT_LOCALE
 ├── types/                          # TypeScript 타입 정의
 │   └── index.ts                    # 중앙 타입 정의
 ├── docs/                           # 프로젝트 문서
 │   ├── PRD.md                      # 제품 요구사항 문서
 │   ├── ARCHITECTURE.md             # 아키텍처 설계 문서
 │   └── development-workflow-guide.md  # 개발 워크플로우 가이드
+├── public/
+│   ├── manifest.json               # PWA 웹 앱 매니페스트
+│   ├── sw.js                       # 서비스 워커 (캐시 전략)
+│   ├── apple-touch-icon.png        # iOS 앱 아이콘
+│   └── icons/                      # PWA 아이콘 (72~512px)
+├── scripts/
+│   └── generate-icons.mjs          # PWA 아이콘 생성 스크립트 (sharp)
 ├── .github/workflows/
 │   └── ci.yml                      # PR 시 Lint + Type Check + Build
 ├── .coderabbit.yaml                # CodeRabbit AI 코드 리뷰 설정
@@ -153,7 +176,11 @@ GOOGLE_CRUX_API_KEY=your_crux_api_key_here
   - 글래스모피즘, 커스텀 애니메이션은 `globals.css`
 - 타입: `types/index.ts`에 중앙 정의
 - API 통신: `lib/api.ts`에 fetch 래퍼 함수로 추상화
-- 한국어 UI: 모든 사용자 대면 텍스트는 한국어
+- 다국어(i18n): 모든 사용자 대면 텍스트는 `t("key")` 번역 함수 사용 (하드코딩 금지)
+  - 지원 언어: 한국어(ko, 기본), 영어(en)
+  - 번역 딕셔너리: `lib/i18n/ko.ts`, `lib/i18n/en.ts`
+  - 새 UI 텍스트 추가 시 반드시 양쪽 딕셔너리에 키 추가
+  - 서버 메타데이터(title, description)는 한국어 고정 (SSR이므로 t() 사용 불가)
 - 접근성: `aria-label`, `aria-hidden`, `role`, `prefers-reduced-motion` 지원
 - Server/Client Component 구분: 파일 최상단 `'use client'` 명시 (필요한 경우만)
 
