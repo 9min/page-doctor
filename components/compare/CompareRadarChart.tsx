@@ -10,33 +10,40 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { CATEGORY_LABELS, CHART_COLORS } from "@/lib/constants";
+import { CHART_COLORS } from "@/lib/constants";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { CompareItem } from "@/hooks/useCompare";
+import type { TranslationKey } from "@/lib/i18n";
 
 interface CompareRadarChartProps {
   items: CompareItem[];
 }
 
+const CATEGORY_KEYS: Array<{ key: string; labelKey: TranslationKey }> = [
+  { key: "performance", labelKey: "category.performance" },
+  { key: "accessibility", labelKey: "category.accessibility" },
+  { key: "best-practices", labelKey: "category.best-practices" },
+  { key: "seo", labelKey: "category.seo" },
+];
+
 export function CompareRadarChart({ items }: CompareRadarChartProps) {
+  const { t } = useTranslation();
   const successItems = items.filter((item) => item.result !== null);
 
   if (successItems.length === 0) return null;
 
-  const data = (
-    Object.keys(CATEGORY_LABELS) as Array<keyof typeof CATEGORY_LABELS>
-  ).map((key) => {
+  const data = CATEGORY_KEYS.map(({ key, labelKey }) => {
     const entry: Record<string, string | number> = {
-      category: CATEGORY_LABELS[key],
+      category: t(labelKey),
     };
     successItems.forEach((item) => {
       if (item.result) {
-        entry[item.url] = item.result.scores[key];
+        entry[item.url] = item.result.scores[key as keyof typeof item.result.scores];
       }
     });
     return entry;
   });
 
-  // URL을 짧게 표시
   const shortenUrl = (url: string) => {
     try {
       return new URL(url).hostname;
@@ -47,7 +54,7 @@ export function CompareRadarChart({ items }: CompareRadarChartProps) {
 
   return (
     <div className="glass-card p-6">
-      <h2 className="mb-4 text-lg font-semibold">카테고리 점수 비교</h2>
+      <h2 className="mb-4 text-lg font-semibold">{t("compare.radar")}</h2>
       <ResponsiveContainer width="100%" height={400}>
         <RadarChart data={data}>
           <PolarGrid stroke="rgba(255,255,255,0.15)" />

@@ -4,17 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Activity } from "lucide-react";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
+import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
+import type { TranslationKey } from "@/lib/i18n";
 
-const NAV_ITEMS = [
-  { href: "/", label: "홈" },
-  { href: "/analyze", label: "분석" },
-  { href: "/history", label: "히스토리" },
-  { href: "/compare", label: "비교" },
+const NAV_ITEMS: Array<{ href: string; labelKey: TranslationKey }> = [
+  { href: "/", labelKey: "nav.home" },
+  { href: "/analyze", labelKey: "nav.analyze" },
+  { href: "/history", labelKey: "nav.history" },
+  { href: "/compare", labelKey: "nav.compare" },
 ];
 
 export function Header() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -33,7 +37,7 @@ export function Header() {
 
           <nav
             className="flex items-center gap-1"
-            aria-label="메인 네비게이션"
+            aria-label={t("nav.ariaLabel")}
           >
             {NAV_ITEMS.map((item) => {
               const isActive =
@@ -52,11 +56,12 @@ export function Header() {
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
-            <div className="ml-2 border-l border-border pl-2">
+            <div className="ml-2 flex items-center gap-1.5 border-l border-border pl-2">
+              <LocaleSwitcher />
               <ThemeToggle />
             </div>
           </nav>

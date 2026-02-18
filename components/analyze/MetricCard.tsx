@@ -2,8 +2,9 @@
 
 import type { WebVitalMetric } from "@/types";
 import { formatMetricValue, getMetricRating } from "@/lib/utils";
-import { WEB_VITAL_LABELS } from "@/lib/constants";
 import { RatingBadge } from "@/components/shared/RatingBadge";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { TranslationKey } from "@/lib/i18n";
 
 interface MetricCardProps {
   metric: WebVitalMetric;
@@ -17,7 +18,14 @@ const COLOR_BAR_CLASSES = {
   poor: "color-bar-danger",
 } as const;
 
+const METRIC_LABEL_KEYS: Record<WebVitalMetric, TranslationKey> = {
+  LCP: "cwv.lcp",
+  INP: "cwv.inp",
+  CLS: "cwv.cls",
+};
+
 export function MetricCard({ metric, value, source = "lab" }: MetricCardProps) {
+  const { t } = useTranslation();
   const rating = value !== null ? getMetricRating(metric, value) : "poor";
   const displayValue = formatMetricValue(metric, value);
 
@@ -33,7 +41,7 @@ export function MetricCard({ metric, value, source = "lab" }: MetricCardProps) {
       </div>
       <p className="text-3xl font-bold tracking-tight">{displayValue}</p>
       <p className="text-xs text-muted-foreground">
-        {WEB_VITAL_LABELS[metric]}
+        {t(METRIC_LABEL_KEYS[metric])}
         {source === "field" && value !== null && (
           <span className="ml-1 opacity-70">(p75)</span>
         )}

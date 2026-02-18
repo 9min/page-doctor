@@ -4,6 +4,7 @@ import { cn, getScoreRating } from "@/lib/utils";
 import { RATING_COLORS } from "@/lib/constants";
 import { RatingBadge } from "@/components/shared/RatingBadge";
 import { BudgetIndicator } from "./BudgetIndicator";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ScoreGaugeProps {
   score: number;
@@ -13,6 +14,7 @@ interface ScoreGaugeProps {
 }
 
 export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps) {
+  const { t } = useTranslation();
   const rating = getScoreRating(score);
   const color = RATING_COLORS[rating].text;
   const strokeWidth = 8;
@@ -85,7 +87,7 @@ export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps
           <span
             className={cn("text-2xl font-bold")}
             style={{ color }}
-            aria-label={`${label} 점수 ${score}점`}
+            aria-label={t("scoreGauge.aria", { label, score: String(score) })}
           >
             {score}
           </span>

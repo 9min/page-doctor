@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Share2, Check } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function ShareButton() {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     return () => {
@@ -46,18 +48,18 @@ export function ShareButton() {
     <button
       type="button"
       onClick={handleCopy}
-      aria-label={copied ? "링크가 복사되었습니다" : "분석 결과 링크 복사"}
+      aria-label={copied ? t("share.ariaCopied") : t("share.ariaLabel")}
       className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors duration-200 motion-reduce:transition-none hover:bg-accent hover:text-foreground cursor-pointer"
     >
       {copied ? (
         <>
           <Check className="h-4 w-4 text-success" aria-hidden="true" />
-          복사됨
+          {t("share.copied")}
         </>
       ) : (
         <>
           <Share2 className="h-4 w-4" aria-hidden="true" />
-          공유
+          {t("share.button")}
         </>
       )}
     </button>

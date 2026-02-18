@@ -12,8 +12,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CATEGORY_LABELS } from "@/lib/constants";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { PerformanceBudget, Category } from "@/types";
+import type { TranslationKey } from "@/lib/i18n";
 
 interface BudgetDialogProps {
   budget: PerformanceBudget | null;
@@ -21,16 +22,17 @@ interface BudgetDialogProps {
   onDelete: () => void | Promise<void>;
 }
 
-const CATEGORIES: Category[] = [
-  "performance",
-  "accessibility",
-  "best-practices",
-  "seo",
+const CATEGORIES: Array<{ key: Category; labelKey: TranslationKey }> = [
+  { key: "performance", labelKey: "category.performance" },
+  { key: "accessibility", labelKey: "category.accessibility" },
+  { key: "best-practices", labelKey: "category.best-practices" },
+  { key: "seo", labelKey: "category.seo" },
 ];
 
 export function BudgetDialog({ budget, onSave, onDelete }: BudgetDialogProps) {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<PerformanceBudget>({});
+  const { t } = useTranslation();
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
@@ -72,38 +74,38 @@ export function BudgetDialog({ budget, onSave, onDelete }: BudgetDialogProps) {
       <DialogTrigger asChild>
         <button
           type="button"
-          aria-label="성능 버짓 설정"
+          aria-label={t("budget.ariaLabel")}
           className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground cursor-pointer"
         >
           <Target className="h-4 w-4" aria-hidden="true" />
-          버짓
+          {t("budget.button")}
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>성능 버짓 설정</DialogTitle>
+          <DialogTitle>{t("budget.title")}</DialogTitle>
           <DialogDescription>
-            각 카테고리의 목표 점수를 설정하세요. 분석 결과에서 달성 여부를 확인할 수 있습니다.
+            {t("budget.description")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {CATEGORIES.map((category) => (
-            <div key={category} className="flex items-center gap-4">
+          {CATEGORIES.map(({ key, labelKey }) => (
+            <div key={key} className="flex items-center gap-4">
               <label
-                htmlFor={`budget-${category}`}
+                htmlFor={`budget-${key}`}
                 className="w-28 text-sm font-medium text-foreground shrink-0"
               >
-                {CATEGORY_LABELS[category]}
+                {t(labelKey)}
               </label>
               <input
-                id={`budget-${category}`}
+                id={`budget-${key}`}
                 type="number"
                 min={0}
                 max={100}
-                placeholder="미설정"
-                value={values[category] ?? ""}
-                onChange={(e) => handleChange(category, e.target.value)}
+                placeholder={t("budget.placeholder")}
+                value={values[key] ?? ""}
+                onChange={(e) => handleChange(key, e.target.value)}
                 className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
@@ -119,7 +121,7 @@ export function BudgetDialog({ budget, onSave, onDelete }: BudgetDialogProps) {
               onClick={handleDelete}
             >
               <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-              삭제
+              {t("budget.delete")}
             </Button>
           )}
           <div className="flex gap-2 ml-auto">
@@ -129,10 +131,10 @@ export function BudgetDialog({ budget, onSave, onDelete }: BudgetDialogProps) {
               size="sm"
               onClick={() => setOpen(false)}
             >
-              취소
+              {t("budget.cancel")}
             </Button>
             <Button type="button" size="sm" onClick={handleSave}>
-              저장
+              {t("budget.save")}
             </Button>
           </div>
         </DialogFooter>

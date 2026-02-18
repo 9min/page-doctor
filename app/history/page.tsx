@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Download, History } from "lucide-react";
 import { useHistory } from "@/hooks/useHistory";
+import { useTranslation } from "@/hooks/useTranslation";
 import { UrlSelector } from "@/components/history/UrlSelector";
 import { PeriodFilter } from "@/components/history/PeriodFilter";
 import { ScoreTrendChart } from "@/components/history/ScoreTrendChart";
@@ -12,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HistoryPage() {
   const { histories, uniqueUrls, isLoading, deleteRecord } = useHistory();
+  const { t } = useTranslation();
   const [selectedUrl, setSelectedUrl] = useState("");
   const [selectedDays, setSelectedDays] = useState(30);
 
@@ -66,16 +68,16 @@ export default function HistoryPage() {
             <History className="h-5 w-5 text-[#3B82F6]" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">성능 히스토리</h1>
+            <h1 className="text-2xl font-bold">{t("history.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              시간에 따른 성능 변화를 추적하세요
+              {t("history.subtitle")}
             </p>
           </div>
         </div>
         <div className="glass-card flex h-64 flex-col items-center justify-center gap-3 text-muted-foreground">
-          <p className="text-lg font-medium">분석 기록이 없습니다</p>
+          <p className="text-lg font-medium">{t("history.empty")}</p>
           <p className="text-sm">
-            홈에서 URL을 분석하면 히스토리가 자동으로 저장됩니다.
+            {t("history.emptyDesc")}
           </p>
         </div>
       </div>
@@ -91,9 +93,9 @@ export default function HistoryPage() {
             <History className="h-5 w-5 text-[#3B82F6]" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">성능 히스토리</h1>
+            <h1 className="text-2xl font-bold">{t("history.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              시간에 따른 성능 변화를 추적하세요
+              {t("history.subtitle")}
             </p>
           </div>
         </div>
@@ -103,7 +105,7 @@ export default function HistoryPage() {
           className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-4 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground disabled:opacity-50 cursor-pointer"
         >
           <Download className="h-4 w-4" />
-          JSON 내보내기
+          {t("history.export")}
         </button>
       </div>
 
@@ -125,7 +127,7 @@ export default function HistoryPage() {
 
       {/* Table */}
       <div>
-        <h2 className="mb-3 text-lg font-semibold">분석 기록</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t("history.records")}</h2>
         <HistoryTable records={filteredRecords} onDelete={handleDelete} />
       </div>
     </div>

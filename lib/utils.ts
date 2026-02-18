@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Rating, WebVitalMetric } from "@/types";
+import type { Locale, Rating, WebVitalMetric } from "@/types";
 import { CWV_THRESHOLDS, SCORE_THRESHOLDS } from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -43,11 +43,12 @@ export function getMetricRating(
 }
 
 /**
- * Format a date string for Korean display.
+ * Format a date string for display with locale support.
  */
-export function formatDate(isoString: string): string {
+export function formatDate(isoString: string, locale: Locale = "ko"): string {
   const date = new Date(isoString);
-  return date.toLocaleDateString("ko-KR", {
+  const bcp47 = locale === "ko" ? "ko-KR" : "en-US";
+  return date.toLocaleDateString(bcp47, {
     year: "numeric",
     month: "short",
     day: "numeric",

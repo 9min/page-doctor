@@ -1,17 +1,27 @@
 "use client";
 
-import { PERIOD_FILTERS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { TranslationKey } from "@/lib/i18n";
 
 interface PeriodFilterProps {
   selectedDays: number;
   onSelect: (days: number) => void;
 }
 
+const PERIOD_OPTIONS: Array<{ days: number; labelKey: TranslationKey }> = [
+  { days: 7, labelKey: "period.7" },
+  { days: 30, labelKey: "period.30" },
+  { days: 90, labelKey: "period.90" },
+  { days: 365, labelKey: "period.365" },
+];
+
 export function PeriodFilter({ selectedDays, onSelect }: PeriodFilterProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex gap-2">
-      {PERIOD_FILTERS.map((filter) => (
+      {PERIOD_OPTIONS.map((filter) => (
         <button
           key={filter.days}
           type="button"
@@ -23,7 +33,7 @@ export function PeriodFilter({ selectedDays, onSelect }: PeriodFilterProps) {
               : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
           )}
         >
-          {filter.label}
+          {t(filter.labelKey)}
         </button>
       ))}
     </div>

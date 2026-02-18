@@ -4,6 +4,7 @@ import { Trophy } from "lucide-react";
 import type { CompareItem } from "@/hooks/useCompare";
 import { getScoreRating } from "@/lib/utils";
 import { RatingBadge } from "@/components/shared/RatingBadge";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface RankingCardProps {
   items: CompareItem[];
@@ -33,6 +34,7 @@ const MEDAL_STYLES = [
 ];
 
 export function RankingCard({ items }: RankingCardProps) {
+  const { t } = useTranslation();
   const successItems = items
     .filter((item) => item.result !== null)
     .sort(
@@ -45,7 +47,7 @@ export function RankingCard({ items }: RankingCardProps) {
     <div className="glass-card p-6">
       <h2 className="mb-4 text-lg font-semibold flex items-center gap-2">
         <Trophy className="h-5 w-5 text-yellow-400" />
-        종합 순위
+        {t("compare.ranking")}
       </h2>
       <div className="space-y-2.5">
         {successItems.map((item, i) => {
