@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { AnalysisResult, Audit, CategoryScores, Strategy, WebVitals } from "@/types";
+import type { AnalysisResult, Audit, AuditDetails, CategoryScores, Strategy, WebVitals } from "@/types";
 
 const PSI_API_URL =
   "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
@@ -163,6 +163,7 @@ function extractAudits(data: any): Audit[] {
         displayValue: audit.displayValue ?? undefined,
         category,
         impact,
+        details: extractAuditDetails(audit.details),
       });
     }
   }
@@ -176,4 +177,59 @@ function extractAudits(data: any): Audit[] {
   });
 
   return audits;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function flattenValue(val: any): string | number | null {
+  if (val == null) return null;
+  if (typeof val === "string" || typeof val === "number") return val;
+  if (typeof val === "object") {
+    // Handle common PSI value types: {type: "url", value: "..."}, {type: "code", value: "..."}, {type: "node", snippet: "..."}
+    if (val.value != null) return String(val.value);
+    if (val.snippet != null) return String(val.snippet);
+    if (val.url != null) return String(val.url);
+    return JSON.stringify(val);
+  }
+  return String(val);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractAuditDetails(details: any): AuditDetails | undefined {
+  if (!details) return undefined;
+  const type = details.type;
+  if (type !== "table" && type !== "opportunity") return undefined;
+  if (!Array.isArray(details.headings) || !Array.isArray(details.items)) return undefined;
+  if (details.items.length === 0) return undefined;
+
+  const headings = details.headings
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((h: any) => h && h.key)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((h: any) => ({
+      key: String(h.key),
+      label: String(h.label ?? h.key),
+      valueType: h.valueType ? String(h.valueType) : undefined,
+    }));
+
+  if (headings.length === 0) return undefined;
+
+  const items = details.items.slice(0, 10).map(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (item: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const flat: Record<string, any> = {};
+      for (const h of headings) {
+        flat[h.key] = flattenValue(item[h.key]);
+      }
+      return flat;
+    }
+  );
+
+  return {
+    type,
+    headings,
+    items,
+    overallSavingsMs: typeof details.overallSavingsMs === "number" ? details.overallSavingsMs : undefined,
+    overallSavingsBytes: typeof details.overallSavingsBytes === "number" ? details.overallSavingsBytes : undefined,
+  };
 }

@@ -53,6 +53,24 @@ export interface CategoryScores {
 // Audit
 // ------------------------------------------
 
+export interface AuditDetailHeading {
+  key: string;
+  label: string;
+  valueType?: string; // "bytes" | "ms" | "url" | "text" | "numeric" | ...
+}
+
+export interface AuditDetailItem {
+  [key: string]: string | number | null | undefined;
+}
+
+export interface AuditDetails {
+  type: string; // "table" | "opportunity" | ...
+  headings: AuditDetailHeading[];
+  items: AuditDetailItem[];
+  overallSavingsMs?: number;
+  overallSavingsBytes?: number;
+}
+
 export interface Audit {
   id: string;
   title: string;
@@ -61,6 +79,7 @@ export interface Audit {
   displayValue?: string;
   category: Category;
   impact: "high" | "medium" | "low";
+  details?: AuditDetails;
 }
 
 // ------------------------------------------

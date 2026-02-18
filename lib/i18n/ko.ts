@@ -77,6 +77,10 @@ const ko = {
   "audit.impact.high": "높음",
   "audit.impact.medium": "보통",
   "audit.impact.low": "낮음",
+  "audit.description": "설명",
+  "audit.details.savingsMs": "예상 절감 시간",
+  "audit.details.savingsBytes": "예상 절감 용량",
+  "audit.details.items": "항목 ({count}개)",
 
   // PDF Report
   "pdf.download": "PDF 리포트",
