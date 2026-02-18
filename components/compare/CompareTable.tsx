@@ -34,6 +34,8 @@ export function CompareTable({ items }: CompareTableProps) {
 
   if (successItems.length === 0) return null;
 
+  let rowIndex = 0;
+
   return (
     <div className="glass-card overflow-hidden">
       <div className="p-6 pb-0">
@@ -42,12 +44,12 @@ export function CompareTable({ items }: CompareTableProps) {
       <div className="overflow-x-auto p-4">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-muted-foreground">
-              <th className="px-4 py-3 font-medium">지표</th>
+            <tr className="border-b border-border/50 text-left text-muted-foreground">
+              <th className="px-4 py-3.5 font-medium">지표</th>
               {successItems.map((item) => (
                 <th
                   key={item.url}
-                  className="px-4 py-3 font-medium text-center"
+                  className="px-4 py-3.5 font-medium text-center"
                   title={item.url}
                 >
                   {shortenUrl(item.url)}
@@ -57,7 +59,7 @@ export function CompareTable({ items }: CompareTableProps) {
           </thead>
           <tbody>
             {/* Performance Score */}
-            <tr className="border-b border-border/50">
+            <tr className={`border-b border-border/30 transition-colors duration-150 hover:bg-[#3B82F6]/5 ${rowIndex++ % 2 === 1 ? "bg-secondary" : ""}`}>
               <td className="px-4 py-3 font-medium">성능 점수</td>
               {successItems.map((item) => (
                 <td key={item.url} className="px-4 py-3 text-center">
@@ -75,7 +77,7 @@ export function CompareTable({ items }: CompareTableProps) {
 
             {/* CWV Metrics */}
             {METRICS.map(({ key, label }) => (
-              <tr key={key} className="border-b border-border/50">
+              <tr key={key} className={`border-b border-border/30 transition-colors duration-150 hover:bg-[#3B82F6]/5 ${rowIndex++ % 2 === 1 ? "bg-secondary" : ""}`}>
                 <td className="px-4 py-3 font-medium">{label}</td>
                 {successItems.map((item) => {
                   const value =
@@ -83,7 +85,9 @@ export function CompareTable({ items }: CompareTableProps) {
                   return (
                     <td key={item.url} className="px-4 py-3 text-center">
                       <div className="flex flex-col items-center gap-1">
-                        <span>{formatMetricValue(key, value)}</span>
+                        <span className="font-mono text-xs">
+                          {formatMetricValue(key, value)}
+                        </span>
                         {value !== null && (
                           <RatingBadge rating={getMetricRating(key, value)} />
                         )}
@@ -102,12 +106,12 @@ export function CompareTable({ items }: CompareTableProps) {
                 { key: "seo", label: "SEO" },
               ] as const
             ).map(({ key, label }) => (
-              <tr key={key} className="border-b border-border/50">
+              <tr key={key} className={`border-b border-border/30 transition-colors duration-150 hover:bg-[#3B82F6]/5 ${rowIndex++ % 2 === 1 ? "bg-secondary" : ""}`}>
                 <td className="px-4 py-3 font-medium">{label}</td>
                 {successItems.map((item) => (
                   <td key={item.url} className="px-4 py-3 text-center">
                     <div className="flex flex-col items-center gap-1">
-                      <span>{item.result!.scores[key]}</span>
+                      <span className="font-semibold">{item.result!.scores[key]}</span>
                       <RatingBadge
                         rating={getScoreRating(item.result!.scores[key])}
                       />

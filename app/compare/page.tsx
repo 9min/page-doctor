@@ -6,7 +6,7 @@ import { CompareRadarChart } from "@/components/compare/CompareRadarChart";
 import { CompareTable } from "@/components/compare/CompareTable";
 import { RankingCard } from "@/components/compare/RankingCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, GitCompareArrows } from "lucide-react";
 
 export default function ComparePage() {
   const { items, isComparing, compare } = useCompare();
@@ -18,21 +18,32 @@ export default function ComparePage() {
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 animate-fade-in">
-      <h1 className="text-2xl font-bold">경쟁사 비교</h1>
+      {/* Page Header */}
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+          <GitCompareArrows className="h-5 w-5 text-[#3B82F6]" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">경쟁사 비교</h1>
+          <p className="text-sm text-muted-foreground">
+            최대 5개 사이트의 성능을 한눈에 비교하세요
+          </p>
+        </div>
+      </div>
 
       <CompareUrlInputs isComparing={isComparing} onCompare={compare} />
 
       {/* Loading state */}
       {isComparing && (
-        <div className="space-y-6">
-          <Skeleton className="h-96 w-full rounded-2xl" />
-          <Skeleton className="h-64 w-full rounded-2xl" />
+        <div className="space-y-5">
+          <Skeleton className="shimmer h-96 w-full rounded-2xl" />
+          <Skeleton className="shimmer h-64 w-full rounded-2xl" />
         </div>
       )}
 
       {/* Error messages for failed URLs */}
       {failedItems.length > 0 && (
-        <div className="glass-card space-y-2 p-4">
+        <div className="glass-card glow-danger space-y-2 p-4">
           {failedItems.map((item) => (
             <div
               key={item.url}
@@ -49,8 +60,8 @@ export default function ComparePage() {
 
       {/* Results */}
       {hasResults && !isComparing && (
-        <div className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5 stagger-fade">
+          <div className="grid gap-5 lg:grid-cols-2">
             <CompareRadarChart items={items} />
             <RankingCard items={items} />
           </div>

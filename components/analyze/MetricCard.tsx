@@ -10,19 +10,27 @@ interface MetricCardProps {
   value: number | null;
 }
 
+const COLOR_BAR_CLASSES = {
+  good: "color-bar-good",
+  "needs-improvement": "color-bar-warning",
+  poor: "color-bar-danger",
+} as const;
+
 export function MetricCard({ metric, value }: MetricCardProps) {
   const rating = value !== null ? getMetricRating(metric, value) : "poor";
   const displayValue = formatMetricValue(metric, value);
 
   return (
-    <div className="glass-card flex flex-col gap-2 p-4">
+    <div
+      className={`flex flex-col gap-2 rounded-xl bg-secondary p-4 transition-colors duration-200 hover:bg-accent ${COLOR_BAR_CLASSES[rating]}`}
+    >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground">
+        <span className="text-sm font-semibold text-muted-foreground">
           {metric}
         </span>
         {value !== null && <RatingBadge rating={rating} />}
       </div>
-      <p className="text-2xl font-bold">{displayValue}</p>
+      <p className="text-3xl font-bold tracking-tight">{displayValue}</p>
       <p className="text-xs text-muted-foreground">
         {WEB_VITAL_LABELS[metric]}
       </p>

@@ -35,24 +35,35 @@ export function RecentAnalyses() {
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <h2 className="text-sm font-medium text-muted-foreground">
           최근 분석
         </h2>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 stagger-fade">
         {records.map((record) => (
           <Link
             key={record.id ?? `${record.url}-${record.analyzedAt}`}
             href={`/analyze?url=${encodeURIComponent(record.url)}&strategy=${record.strategy}`}
-            className="glass-card flex items-center justify-between p-3 transition-colors hover:bg-accent/50"
+            className="glass-card flex items-center justify-between p-3.5 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
           >
             <div className="flex items-center gap-3 min-w-0">
               <RatingBadge
                 rating={getScoreRating(record.scores.performance)}
               />
-              <span className="truncate text-sm">{record.url}</span>
+              <div className="min-w-0">
+                <span className="block truncate text-sm font-medium">
+                  {record.url}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {record.strategy === "mobile" ? "모바일" : "데스크톱"} ·
+                  성능{" "}
+                  <span className="font-semibold text-foreground">
+                    {record.scores.performance}
+                  </span>
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-3 shrink-0 ml-3">
               <span className="text-xs text-muted-foreground">

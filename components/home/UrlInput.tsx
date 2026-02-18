@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Monitor, Smartphone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, Monitor, Smartphone, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Strategy } from "@/types";
 import { isValidUrl, normalizeUrl } from "@/lib/utils";
@@ -37,11 +36,12 @@ export function UrlInput() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-xl">
-      <div className="glass-card flex flex-col gap-3 p-4">
+      <div className="glass-card flex flex-col gap-4 p-5">
+        {/* URL Input + Submit */}
         <div className="flex gap-2">
-          <div className="relative flex-1">
+          <div className="focus-glow relative flex-1 rounded-xl border border-border transition-all duration-200">
             <Search
-              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
               aria-hidden="true"
             />
             <Input
@@ -52,41 +52,58 @@ export function UrlInput() {
                 setUrl(e.target.value);
                 setError(null);
               }}
-              className="pl-9"
+              className="border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0"
               aria-label="분석할 URL"
             />
           </div>
-          <Button type="submit">분석</Button>
+          <button
+            type="submit"
+            className="btn-gradient flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer"
+          >
+            분석
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
         </div>
 
+        {/* Strategy Toggle + Error */}
         <div className="flex items-center justify-between">
-          <div className="flex gap-1" role="radiogroup" aria-label="분석 전략">
-            <Button
+          <div
+            className="flex gap-1 rounded-xl bg-secondary p-1"
+            role="radiogroup"
+            aria-label="분석 전략"
+          >
+            <button
               type="button"
-              variant={strategy === "mobile" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setStrategy("mobile")}
-              aria-checked={strategy === "mobile"}
-              role="radio"
-            >
-              <Smartphone className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
-              모바일
-            </Button>
-            <Button
-              type="button"
-              variant={strategy === "desktop" ? "default" : "outline"}
-              size="sm"
               onClick={() => setStrategy("desktop")}
               aria-checked={strategy === "desktop"}
               role="radio"
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+                strategy === "desktop"
+                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <Monitor className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+              <Monitor className="h-3.5 w-3.5" aria-hidden="true" />
               데스크톱
-            </Button>
+            </button>
+            <button
+              type="button"
+              onClick={() => setStrategy("mobile")}
+              aria-checked={strategy === "mobile"}
+              role="radio"
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+                strategy === "mobile"
+                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
+              모바일
+            </button>
           </div>
 
           {error && (
-            <p className="text-sm text-danger" role="alert">
+            <p className="text-xs font-medium text-danger" role="alert">
               {error}
             </p>
           )}
