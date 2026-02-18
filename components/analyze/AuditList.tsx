@@ -38,15 +38,20 @@ export function AuditList({ audits }: AuditListProps) {
             ({filtered.length})
           </span>
         </h2>
-        <div className="flex flex-wrap gap-1 rounded-xl bg-secondary p-1">
+        <div
+          className="flex flex-wrap gap-1 rounded-xl bg-secondary p-1"
+          role="tablist"
+          aria-label={t("audit.filter.ariaLabel")}
+        >
           {FILTER_OPTIONS.map((opt) => (
             <button
               type="button"
               key={opt.key}
               onClick={() => setFilter(opt.key)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+              aria-pressed={filter === opt.key}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer ${
                 filter === opt.key
-                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

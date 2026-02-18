@@ -50,9 +50,9 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-xl px-3.5 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer",
+                    "rounded-xl px-3.5 py-1.5 text-sm font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer",
                     isActive
-                      ? "bg-[#3B82F6]/10 text-[#3B82F6]"
+                      ? "bg-primary/20 text-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                 >

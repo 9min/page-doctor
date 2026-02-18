@@ -76,6 +76,7 @@ const en: Dictionary = {
   "audit.title": "Improvement Suggestions",
   "audit.empty": "No improvement suggestions.",
   "audit.filter.all": "All",
+  "audit.filter.ariaLabel": "Category filter",
   "audit.impact.high": "High",
   "audit.impact.medium": "Medium",
   "audit.impact.low": "Low",
