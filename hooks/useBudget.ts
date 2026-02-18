@@ -43,6 +43,9 @@ export function useBudget(url: string | null) {
 
   useEffect(() => {
     refresh();
+    return () => {
+      requestIdRef.current += 1;
+    };
   }, [refresh]);
 
   const saveBudget = useCallback(
