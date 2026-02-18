@@ -28,11 +28,12 @@ export function AnalyzeDashboard() {
   const { saveResult } = useHistory();
   const savedRef = useRef(false);
   const [cruxResult, setCruxResult] = useState<CruxResult | null>(null);
+  const cruxFetchedUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (url) {
       savedRef.current = false;
-      setCruxResult(null);
+      cruxFetchedUrlRef.current = null;
       analyze(url, strategy);
     }
   }, [url, strategy, analyze]);
@@ -41,11 +42,17 @@ export function AnalyzeDashboard() {
     if (result && !savedRef.current) {
       savedRef.current = true;
       saveResult(result);
+    }
+  }, [result, saveResult]);
+
+  useEffect(() => {
+    if (result && cruxFetchedUrlRef.current !== result.url) {
+      cruxFetchedUrlRef.current = result.url;
       fetchCruxData({ url: result.url })
         .then((res) => setCruxResult(res.result))
         .catch(() => setCruxResult(null));
     }
-  }, [result, saveResult]);
+  }, [result]);
 
   if (!url) {
     return (
