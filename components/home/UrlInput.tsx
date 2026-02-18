@@ -11,7 +11,7 @@ import { isValidUrl, normalizeUrl } from "@/lib/utils";
 export function UrlInput() {
   const router = useRouter();
   const [url, setUrl] = useState("");
-  const [strategy, setStrategy] = useState<Strategy>("mobile");
+  const [strategy, setStrategy] = useState<Strategy>("desktop");
   const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
