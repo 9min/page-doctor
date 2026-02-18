@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import { useHistory } from "@/hooks/useHistory";
 import { UrlSelector } from "@/components/history/UrlSelector";
@@ -9,39 +9,32 @@ import { ScoreTrendChart } from "@/components/history/ScoreTrendChart";
 import { WebVitalsTrendChart } from "@/components/history/WebVitalsTrendChart";
 import { HistoryTable } from "@/components/history/HistoryTable";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { AnalysisRecord } from "@/types";
 
 export default function HistoryPage() {
-  const { uniqueUrls, isLoading, getByUrl, deleteRecord, refresh } =
-    useHistory();
+  const { histories, uniqueUrls, isLoading, deleteRecord } = useHistory();
   const [selectedUrl, setSelectedUrl] = useState("");
   const [selectedDays, setSelectedDays] = useState(30);
-  const [filteredRecords, setFilteredRecords] = useState<AnalysisRecord[]>([]);
 
-  // URL 선택 시 첫 번째 URL로 초기화
-  useEffect(() => {
-    if (uniqueUrls.length > 0 && !selectedUrl) {
-      setSelectedUrl(uniqueUrls[0]);
+  // 선택된 URL (미선택 시 첫 번째 URL 사용)
+  const effectiveUrl = selectedUrl || (uniqueUrls.length > 0 ? uniqueUrls[0] : "");
+
+  // histories 배열에서 동기적으로 필터링 (useEffect 불필요)
+  const filteredRecords = useMemo(() => {
+    if (!effectiveUrl) return [];
+
+    let filtered = histories.filter((r) => r.url === effectiveUrl);
+
+    if (selectedDays < 365) {
+      const since = new Date();
+      since.setDate(since.getDate() - selectedDays);
+      filtered = filtered.filter((r) => new Date(r.analyzedAt) >= since);
     }
-  }, [uniqueUrls, selectedUrl]);
 
-  // 선택된 URL + 기간에 따라 데이터 필터링
-  const loadFilteredRecords = useCallback(async () => {
-    if (!selectedUrl) {
-      setFilteredRecords([]);
-      return;
-    }
-    const records = await getByUrl(selectedUrl, selectedDays);
-    setFilteredRecords(records);
-  }, [selectedUrl, selectedDays, getByUrl]);
-
-  useEffect(() => {
-    loadFilteredRecords();
-  }, [loadFilteredRecords]);
+    return filtered.sort((a, b) => a.analyzedAt.localeCompare(b.analyzedAt));
+  }, [histories, effectiveUrl, selectedDays]);
 
   const handleDelete = async (id: number) => {
     await deleteRecord(id);
-    await loadFilteredRecords();
   };
 
   const handleExportJson = () => {
@@ -51,7 +44,7 @@ export default function HistoryPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `page-doctor-history-${selectedUrl.replace(/[^a-zA-Z0-9]/g, "_")}.json`;
+    a.download = `page-doctor-history-${effectiveUrl.replace(/[^a-zA-Z0-9]/g, "_")}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -100,7 +93,7 @@ export default function HistoryPage() {
         <div className="flex-1 min-w-[250px]">
           <UrlSelector
             urls={uniqueUrls}
-            selectedUrl={selectedUrl}
+            selectedUrl={effectiveUrl}
             onSelect={setSelectedUrl}
           />
         </div>
