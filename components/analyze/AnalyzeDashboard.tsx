@@ -54,6 +54,10 @@ export function AnalyzeDashboard() {
     }
   }, [result]);
 
+  const isCruxLoading =
+    result !== null &&
+    (cruxResult === null || cruxResult.url !== result.url);
+
   if (!url) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
@@ -116,7 +120,7 @@ export function AnalyzeDashboard() {
 
         {/* Core Web Vitals - spans 2 cols */}
         <div className="lg:col-span-2">
-          <CoreWebVitals webVitals={result.webVitals} cruxResult={cruxResult} />
+          <CoreWebVitals webVitals={result.webVitals} cruxResult={cruxResult} isCruxLoading={isCruxLoading} />
         </div>
 
         {/* Summary card - 1 col */}
