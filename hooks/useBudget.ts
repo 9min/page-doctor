@@ -1,0 +1,74 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { db } from "@/lib/db";
+import type { PerformanceBudget } from "@/types";
+
+function budgetKey(url: string): string {
+  return `budget:${url}`;
+}
+
+export function useBudget(url: string | null) {
+  const [budget, setBudget] = useState<PerformanceBudget | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const requestIdRef = useRef(0);
+
+  const refresh = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
+    if (!url) {
+      setBudget(null);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const record = await db.settings.get(budgetKey(url));
+      if (requestId !== requestIdRef.current) return;
+      if (record) {
+        setBudget(JSON.parse(record.value) as PerformanceBudget);
+      } else {
+        setBudget(null);
+      }
+    } catch {
+      if (requestId !== requestIdRef.current) return;
+      setBudget(null);
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setIsLoading(false);
+      }
+    }
+  }, [url]);
+
+  useEffect(() => {
+    refresh();
+    return () => {
+      requestIdRef.current += 1;
+    };
+  }, [refresh]);
+
+  const saveBudget = useCallback(
+    async (newBudget: PerformanceBudget) => {
+      const currentUrl = url;
+      if (!currentUrl) return;
+      const key = budgetKey(currentUrl);
+      await db.settings.put({ key, value: JSON.stringify(newBudget) });
+      if (currentUrl === url) {
+        setBudget(newBudget);
+      }
+    },
+    [url],
+  );
+
+  const deleteBudget = useCallback(async () => {
+    const currentUrl = url;
+    if (!currentUrl) return;
+    await db.settings.delete(budgetKey(currentUrl));
+    if (currentUrl === url) {
+      setBudget(null);
+    }
+  }, [url]);
+
+  return { budget, isLoading, saveBudget, deleteBudget };
+}

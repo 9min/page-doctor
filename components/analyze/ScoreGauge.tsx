@@ -3,14 +3,16 @@
 import { cn, getScoreRating } from "@/lib/utils";
 import { RATING_COLORS } from "@/lib/constants";
 import { RatingBadge } from "@/components/shared/RatingBadge";
+import { BudgetIndicator } from "./BudgetIndicator";
 
 interface ScoreGaugeProps {
   score: number;
   label: string;
   size?: number;
+  target?: number;
 }
 
-export function ScoreGauge({ score, label, size = 120 }: ScoreGaugeProps) {
+export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps) {
   const rating = getScoreRating(score);
   const color = RATING_COLORS[rating].text;
   const strokeWidth = 8;
@@ -18,6 +20,12 @@ export function ScoreGauge({ score, label, size = 120 }: ScoreGaugeProps) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
   const filterId = `glow-${label.replace(/\s+/g, "-")}`;
+
+  // Target line position on the arc (clamped to 0-100)
+  const clampedTarget = target != null ? Math.min(100, Math.max(0, target)) : null;
+  const targetOffset = clampedTarget != null
+    ? circumference - (clampedTarget / 100) * circumference
+    : null;
 
   return (
     <div className="flex flex-col items-center gap-2.5">
@@ -58,6 +66,20 @@ export function ScoreGauge({ score, label, size = 120 }: ScoreGaugeProps) {
             filter={`url(#${filterId})`}
             className="transition-all duration-1000 ease-out"
           />
+          {/* Target marker */}
+          {targetOffset != null && (
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              strokeWidth={strokeWidth + 2}
+              strokeLinecap="butt"
+              strokeDasharray={`2 ${circumference - 2}`}
+              strokeDashoffset={targetOffset}
+              className="pointer-events-none stroke-white/50"
+            />
+          )}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
@@ -73,6 +95,9 @@ export function ScoreGauge({ score, label, size = 120 }: ScoreGaugeProps) {
         {label}
       </span>
       <RatingBadge rating={rating} />
+      {clampedTarget != null && (
+        <BudgetIndicator target={clampedTarget} current={score} />
+      )}
     </div>
   );
 }
