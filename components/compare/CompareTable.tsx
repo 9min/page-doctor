@@ -3,6 +3,7 @@
 import type { CompareItem } from "@/hooks/useCompare";
 import { formatMetricValue, getMetricRating, getScoreRating } from "@/lib/utils";
 import { RatingBadge } from "@/components/shared/RatingBadge";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { WebVitalMetric } from "@/types";
 
 interface CompareTableProps {
@@ -30,28 +31,29 @@ function shortenUrl(url: string) {
 }
 
 export function CompareTable({ items }: CompareTableProps) {
+  const { t } = useTranslation();
   const successItems = items.filter((item) => item.result !== null);
 
   if (successItems.length === 0) return null;
 
   const rows = [
-    { key: "performance", label: "성능 점수" },
+    { key: "performance", label: t("compare.perfScore") },
     ...METRICS.map(({ key, label }) => ({ key, label })),
-    { key: "accessibility" as const, label: "접근성" },
-    { key: "best-practices" as const, label: "권장사항" },
-    { key: "seo" as const, label: "SEO" },
+    { key: "accessibility" as const, label: t("category.accessibility") },
+    { key: "best-practices" as const, label: t("category.best-practices") },
+    { key: "seo" as const, label: t("category.seo") },
   ];
 
   return (
     <div className="glass-card overflow-hidden">
       <div className="p-6 pb-0">
-        <h2 className="text-lg font-semibold">상세 비교</h2>
+        <h2 className="text-lg font-semibold">{t("compare.detail")}</h2>
       </div>
       <div className="overflow-x-auto p-4">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/50 text-left text-muted-foreground">
-              <th className="px-4 py-3.5 font-medium">지표</th>
+              <th className="px-4 py-3.5 font-medium">{t("compare.metric")}</th>
               {successItems.map((item) => (
                 <th
                   key={item.url}

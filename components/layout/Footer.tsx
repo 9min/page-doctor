@@ -1,7 +1,12 @@
+"use client";
+
 import { Activity } from "lucide-react";
 import Link from "next/link";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="mt-auto py-8">
       <div className="container mx-auto px-4">
@@ -17,32 +22,32 @@ export function Footer() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            Google PageSpeed Insights API로 구동됩니다.
+            {t("footer.powered")}
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <Link
               href="/"
               className="transition-colors hover:text-foreground cursor-pointer"
             >
-              홈
+              {t("nav.home")}
             </Link>
             <Link
               href="/analyze"
               className="transition-colors hover:text-foreground cursor-pointer"
             >
-              분석
+              {t("nav.analyze")}
             </Link>
             <Link
               href="/history"
               className="transition-colors hover:text-foreground cursor-pointer"
             >
-              히스토리
+              {t("nav.history")}
             </Link>
             <Link
               href="/compare"
               className="transition-colors hover:text-foreground cursor-pointer"
             >
-              비교
+              {t("nav.compare")}
             </Link>
           </div>
           <p className="text-xs text-muted-foreground/60">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCompare } from "@/hooks/useCompare";
+import { useTranslation } from "@/hooks/useTranslation";
 import { CompareUrlInputs } from "@/components/compare/CompareUrlInputs";
 import { CompareRadarChart } from "@/components/compare/CompareRadarChart";
 import { CompareTable } from "@/components/compare/CompareTable";
@@ -10,6 +11,7 @@ import { AlertCircle, GitCompareArrows } from "lucide-react";
 
 export default function ComparePage() {
   const { items, isComparing, compare } = useCompare();
+  const { t } = useTranslation();
 
   const hasResults = items.some((item) => item.result !== null);
   const failedItems = items.filter(
@@ -24,9 +26,9 @@ export default function ComparePage() {
           <GitCompareArrows className="h-5 w-5 text-[#3B82F6]" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">경쟁사 비교</h1>
+          <h1 className="text-2xl font-bold">{t("compare.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            최대 5개 사이트의 성능을 한눈에 비교하세요
+            {t("compare.subtitle")}
           </p>
         </div>
       </div>

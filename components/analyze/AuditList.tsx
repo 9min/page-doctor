@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { Audit, Category } from "@/types";
-import { CATEGORY_LABELS } from "@/lib/constants";
 import { AuditItem } from "./AuditItem";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { TranslationKey } from "@/lib/i18n";
 
 interface AuditListProps {
   audits: Audit[];
@@ -11,16 +12,17 @@ interface AuditListProps {
 
 type FilterKey = "all" | Category;
 
-const FILTER_OPTIONS: Array<{ key: FilterKey; label: string }> = [
-  { key: "all", label: "전체" },
-  { key: "performance", label: CATEGORY_LABELS.performance },
-  { key: "accessibility", label: CATEGORY_LABELS.accessibility },
-  { key: "best-practices", label: CATEGORY_LABELS["best-practices"] },
-  { key: "seo", label: CATEGORY_LABELS.seo },
+const FILTER_OPTIONS: Array<{ key: FilterKey; labelKey: TranslationKey }> = [
+  { key: "all", labelKey: "audit.filter.all" },
+  { key: "performance", labelKey: "category.performance" },
+  { key: "accessibility", labelKey: "category.accessibility" },
+  { key: "best-practices", labelKey: "category.best-practices" },
+  { key: "seo", labelKey: "category.seo" },
 ];
 
 export function AuditList({ audits }: AuditListProps) {
   const [filter, setFilter] = useState<FilterKey>("all");
+  const { t } = useTranslation();
 
   const filtered =
     filter === "all"
@@ -31,7 +33,7 @@ export function AuditList({ audits }: AuditListProps) {
     <div className="glass-card p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">
-          개선 제안{" "}
+          {t("audit.title")}{" "}
           <span className="text-sm font-normal text-muted-foreground">
             ({filtered.length})
           </span>
@@ -48,14 +50,14 @@ export function AuditList({ audits }: AuditListProps) {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {opt.label}
+              {t(opt.labelKey)}
             </button>
           ))}
         </div>
       </div>
       {filtered.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
-          개선 제안이 없습니다.
+          {t("audit.empty")}
         </p>
       ) : (
         <div className="space-y-2">

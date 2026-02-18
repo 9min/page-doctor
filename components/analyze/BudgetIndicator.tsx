@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, AlertTriangle } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface BudgetIndicatorProps {
   target: number;
@@ -8,6 +9,7 @@ interface BudgetIndicatorProps {
 }
 
 export function BudgetIndicator({ target, current }: BudgetIndicatorProps) {
+  const { t } = useTranslation();
   const met = current >= target;
 
   return (
@@ -19,9 +21,9 @@ export function BudgetIndicator({ target, current }: BudgetIndicatorProps) {
       )}
       <span
         className={`text-xs ${met ? "text-success" : "text-danger"}`}
-        aria-label={`목표: ${target}점, 현재: ${current}점`}
+        aria-label={t("budgetIndicator.aria", { target: String(target), current: String(current) })}
       >
-        목표 {target} / 현재 {current}
+        {t("budgetIndicator.label", { target: String(target), current: String(current) })}
       </span>
     </div>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/hooks/useTranslation";
+
 interface UrlSelectorProps {
   urls: string[];
   selectedUrl: string;
@@ -7,6 +9,8 @@ interface UrlSelectorProps {
 }
 
 export function UrlSelector({ urls, selectedUrl, onSelect }: UrlSelectorProps) {
+  const { t } = useTranslation();
+
   if (urls.length === 0) {
     return null;
   }
@@ -17,7 +21,7 @@ export function UrlSelector({ urls, selectedUrl, onSelect }: UrlSelectorProps) {
         htmlFor="url-selector"
         className="text-sm font-medium text-muted-foreground whitespace-nowrap"
       >
-        URL 선택
+        {t("history.urlSelect")}
       </label>
       <select
         id="url-selector"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Minus, Loader2, Monitor, Smartphone } from "lucide-react";
 import { isValidUrl, normalizeUrl } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { Strategy } from "@/types";
 
 interface CompareUrlInputsProps {
@@ -14,6 +15,7 @@ export function CompareUrlInputs({
   isComparing,
   onCompare,
 }: CompareUrlInputsProps) {
+  const { t } = useTranslation();
   const [urls, setUrls] = useState(["", ""]);
   const [strategy, setStrategy] = useState<Strategy>("desktop");
   const [errors, setErrors] = useState<string[]>([]);
@@ -41,8 +43,8 @@ export function CompareUrlInputs({
     e.preventDefault();
 
     const validationErrors: string[] = urls.map((url) => {
-      if (!url.trim()) return "URL을 입력해주세요.";
-      if (!isValidUrl(url)) return "올바른 URL을 입력해주세요.";
+      if (!url.trim()) return t("compare.error.empty");
+      if (!isValidUrl(url)) return t("compare.error.invalid");
       return "";
     });
 
@@ -57,7 +59,7 @@ export function CompareUrlInputs({
   return (
     <form onSubmit={handleSubmit} className="glass-card space-y-4 p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">비교할 URL 입력</h2>
+        <h2 className="text-lg font-semibold">{t("compare.inputTitle")}</h2>
         <span className="text-sm text-muted-foreground">
           {urls.length}/5 URL
         </span>
@@ -78,7 +80,7 @@ export function CompareUrlInputs({
                   placeholder={`https://example${i + 1}.com`}
                   className="w-full rounded-xl border-0 bg-transparent px-3 py-2 text-sm outline-none"
                   disabled={isComparing}
-                  aria-label={`비교할 URL ${i + 1}`}
+                  aria-label={`${t("compare.urlAria")} ${i + 1}`}
                 />
               </div>
               {urls.length > 2 && (
@@ -86,7 +88,7 @@ export function CompareUrlInputs({
                   type="button"
                   onClick={() => removeUrl(i)}
                   className="rounded-lg p-2 text-muted-foreground transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
-                  aria-label="URL 제거"
+                  aria-label={t("compare.removeUrl")}
                   disabled={isComparing}
                 >
                   <Minus className="h-4 w-4" />
@@ -108,14 +110,14 @@ export function CompareUrlInputs({
           className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground cursor-pointer"
         >
           <Plus className="h-4 w-4" />
-          URL 추가
+          {t("compare.addUrl")}
         </button>
       )}
 
       {/* Strategy selector */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">전략:</span>
-        <div className="flex gap-1 rounded-xl bg-secondary p-1" role="radiogroup" aria-label="분석 전략">
+        <span className="text-sm text-muted-foreground">{t("compare.strategy")}</span>
+        <div className="flex gap-1 rounded-xl bg-secondary p-1" role="radiogroup" aria-label={t("input.strategy")}>
           <button
             type="button"
             role="radio"
@@ -129,7 +131,7 @@ export function CompareUrlInputs({
             }`}
           >
             <Monitor className="h-3.5 w-3.5" aria-hidden="true" />
-            데스크톱
+            {t("input.desktop")}
           </button>
           <button
             type="button"
@@ -144,7 +146,7 @@ export function CompareUrlInputs({
             }`}
           >
             <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
-            모바일
+            {t("input.mobile")}
           </button>
         </div>
       </div>
@@ -157,10 +159,10 @@ export function CompareUrlInputs({
         {isComparing ? (
           <span className="flex items-center justify-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            비교 분석 중...
+            {t("compare.loading")}
           </span>
         ) : (
-          "비교 분석 시작"
+          t("compare.submit")
         )}
       </button>
     </form>

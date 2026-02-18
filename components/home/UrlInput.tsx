@@ -6,9 +6,11 @@ import { Search, Monitor, Smartphone, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Strategy } from "@/types";
 import { isValidUrl, normalizeUrl } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function UrlInput() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [url, setUrl] = useState("");
   const [strategy, setStrategy] = useState<Strategy>("desktop");
   const [error, setError] = useState<string | null>(null);
@@ -19,12 +21,12 @@ export function UrlInput() {
 
     const trimmed = url.trim();
     if (!trimmed) {
-      setError("URL을 입력해주세요.");
+      setError(t("input.error.empty"));
       return;
     }
 
     if (!isValidUrl(trimmed)) {
-      setError("유효한 URL을 입력해주세요.");
+      setError(t("input.error.invalid"));
       return;
     }
 
@@ -46,21 +48,21 @@ export function UrlInput() {
             />
             <Input
               type="text"
-              placeholder="URL을 입력하세요 (예: example.com)"
+              placeholder={t("input.placeholder")}
               value={url}
               onChange={(e) => {
                 setUrl(e.target.value);
                 setError(null);
               }}
               className="border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0"
-              aria-label="분석할 URL"
+              aria-label={t("input.ariaLabel")}
             />
           </div>
           <button
             type="submit"
             className="btn-gradient flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer"
           >
-            분석
+            {t("input.submit")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
@@ -70,7 +72,7 @@ export function UrlInput() {
           <div
             className="flex gap-1 rounded-xl bg-secondary p-1"
             role="radiogroup"
-            aria-label="분석 전략"
+            aria-label={t("input.strategy")}
           >
             <button
               type="button"
@@ -84,7 +86,7 @@ export function UrlInput() {
               }`}
             >
               <Monitor className="h-3.5 w-3.5" aria-hidden="true" />
-              데스크톱
+              {t("input.desktop")}
             </button>
             <button
               type="button"
@@ -98,7 +100,7 @@ export function UrlInput() {
               }`}
             >
               <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
-              모바일
+              {t("input.mobile")}
             </button>
           </div>
 

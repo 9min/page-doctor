@@ -12,22 +12,26 @@ import {
 } from "recharts";
 import type { AnalysisRecord } from "@/types";
 import { CWV_THRESHOLDS } from "@/lib/constants";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface WebVitalsTrendChartProps {
   records: AnalysisRecord[];
 }
 
 export function WebVitalsTrendChart({ records }: WebVitalsTrendChartProps) {
+  const { t, locale } = useTranslation();
+  const bcp47 = locale === "ko" ? "ko-KR" : "en-US";
+
   if (records.length === 0) {
     return (
       <div className="glass-card flex h-64 items-center justify-center text-muted-foreground">
-        분석 기록이 없습니다.
+        {t("history.noRecords")}
       </div>
     );
   }
 
   const lcpData = records.map((r) => ({
-    date: new Date(r.analyzedAt).toLocaleDateString("ko-KR", {
+    date: new Date(r.analyzedAt).toLocaleDateString(bcp47, {
       month: "short",
       day: "numeric",
     }),
@@ -35,7 +39,7 @@ export function WebVitalsTrendChart({ records }: WebVitalsTrendChartProps) {
   }));
 
   const inpData = records.map((r) => ({
-    date: new Date(r.analyzedAt).toLocaleDateString("ko-KR", {
+    date: new Date(r.analyzedAt).toLocaleDateString(bcp47, {
       month: "short",
       day: "numeric",
     }),
@@ -43,7 +47,7 @@ export function WebVitalsTrendChart({ records }: WebVitalsTrendChartProps) {
   }));
 
   const clsData = records.map((r) => ({
-    date: new Date(r.analyzedAt).toLocaleDateString("ko-KR", {
+    date: new Date(r.analyzedAt).toLocaleDateString(bcp47, {
       month: "short",
       day: "numeric",
     }),
@@ -59,7 +63,7 @@ export function WebVitalsTrendChart({ records }: WebVitalsTrendChartProps) {
 
   return (
     <div className="glass-card p-6">
-      <h2 className="mb-4 text-lg font-semibold">Core Web Vitals 트렌드</h2>
+      <h2 className="mb-4 text-lg font-semibold">{t("history.cwvTrend")}</h2>
       <div className="grid gap-6 lg:grid-cols-3">
         {/* LCP Chart */}
         <div>

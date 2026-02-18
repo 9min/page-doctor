@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FileDown, Loader2 } from "lucide-react";
 import type { AnalysisResult } from "@/types";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PdfReportButtonProps {
   result: AnalysisResult;
@@ -10,6 +11,7 @@ interface PdfReportButtonProps {
 
 export function PdfReportButton({ result }: PdfReportButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const { t } = useTranslation();
 
   const handleDownload = async () => {
     setIsGenerating(true);
@@ -54,7 +56,7 @@ export function PdfReportButton({ result }: PdfReportButtonProps) {
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error("PDF generation failed:", err);
-      alert("PDF 생성에 실패했습니다. 다시 시도해주세요.");
+      alert(t("pdf.error"));
     } finally {
       setIsGenerating(false);
     }
@@ -65,19 +67,19 @@ export function PdfReportButton({ result }: PdfReportButtonProps) {
       type="button"
       onClick={handleDownload}
       disabled={isGenerating}
-      aria-label={isGenerating ? "PDF 리포트 생성 중" : "PDF 리포트 다운로드"}
+      aria-label={isGenerating ? t("pdf.ariaGenerating") : t("pdf.ariaDownload")}
       aria-busy={isGenerating}
       className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground disabled:opacity-50 cursor-pointer"
     >
       {isGenerating ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          생성 중...
+          {t("pdf.generating")}
         </>
       ) : (
         <>
           <FileDown className="h-4 w-4" aria-hidden="true" />
-          PDF 리포트
+          {t("pdf.download")}
         </>
       )}
     </button>

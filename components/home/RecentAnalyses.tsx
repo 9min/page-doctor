@@ -7,8 +7,10 @@ import { db } from "@/lib/db";
 import type { AnalysisRecord } from "@/types";
 import { formatDate, getScoreRating } from "@/lib/utils";
 import { RatingBadge } from "@/components/shared/RatingBadge";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function RecentAnalyses() {
+  const { t, locale } = useTranslation();
   const [records, setRecords] = useState<AnalysisRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +40,7 @@ export function RecentAnalyses() {
       <div className="mb-4 flex items-center gap-2">
         <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <h2 className="text-sm font-medium text-muted-foreground">
-          최근 분석
+          {t("home.recent")}
         </h2>
       </div>
       <div className="space-y-2 stagger-fade">
@@ -57,8 +59,8 @@ export function RecentAnalyses() {
                   {record.url}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {record.strategy === "mobile" ? "모바일" : "데스크톱"} ·
-                  성능{" "}
+                  {record.strategy === "mobile" ? t("home.recent.mobile") : t("home.recent.desktop")} ·
+                  {t("home.recent.perf")}{" "}
                   <span className="font-semibold text-foreground">
                     {record.scores.performance}
                   </span>
@@ -67,7 +69,7 @@ export function RecentAnalyses() {
             </div>
             <div className="flex items-center gap-3 shrink-0 ml-3">
               <span className="text-xs text-muted-foreground">
-                {formatDate(record.analyzedAt)}
+                {formatDate(record.analyzedAt, locale)}
               </span>
               <ExternalLink
                 className="h-3.5 w-3.5 text-muted-foreground"

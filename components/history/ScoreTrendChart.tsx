@@ -11,30 +11,39 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { AnalysisRecord } from "@/types";
-import { CATEGORY_LABELS } from "@/lib/constants";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ScoreTrendChartProps {
   records: AnalysisRecord[];
 }
 
 export function ScoreTrendChart({ records }: ScoreTrendChartProps) {
+  const { t, locale } = useTranslation();
+
   if (records.length === 0) {
     return (
       <div className="glass-card flex h-64 items-center justify-center text-muted-foreground">
-        분석 기록이 없습니다.
+        {t("history.noRecords")}
       </div>
     );
   }
 
+  const categoryLabels = {
+    performance: t("category.performance"),
+    accessibility: t("category.accessibility"),
+    bestPractices: t("category.best-practices"),
+    seo: t("category.seo"),
+  };
+
   const data = records.map((r) => ({
-    date: new Date(r.analyzedAt).toLocaleDateString("ko-KR", {
+    date: new Date(r.analyzedAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US", {
       month: "short",
       day: "numeric",
     }),
-    성능: r.scores.performance,
-    접근성: r.scores.accessibility,
-    권장사항: r.scores["best-practices"],
-    SEO: r.scores.seo,
+    [categoryLabels.performance]: r.scores.performance,
+    [categoryLabels.accessibility]: r.scores.accessibility,
+    [categoryLabels.bestPractices]: r.scores["best-practices"],
+    [categoryLabels.seo]: r.scores.seo,
   }));
 
   const lineColors = [
@@ -44,11 +53,11 @@ export function ScoreTrendChart({ records }: ScoreTrendChartProps) {
     "var(--chart-4)",
   ];
 
-  const categoryKeys = Object.values(CATEGORY_LABELS);
+  const categoryKeys = Object.values(categoryLabels);
 
   return (
     <div className="glass-card p-6">
-      <h2 className="mb-4 text-lg font-semibold">점수 트렌드</h2>
+      <h2 className="mb-4 text-lg font-semibold">{t("history.scoreTrend")}</h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />

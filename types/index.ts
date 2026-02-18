@@ -2,6 +2,9 @@
 // PageDoctor - Central Type Definitions
 // ==========================================
 
+/** Supported locale */
+export type Locale = "ko" | "en";
+
 /** PSI analysis strategy */
 export type Strategy = "mobile" | "desktop";
 
@@ -162,6 +165,25 @@ export interface PerformanceBudget {
   accessibility?: number;
   "best-practices"?: number;
   seo?: number;
+}
+
+// ------------------------------------------
+// Schedule
+// ------------------------------------------
+
+export type ScheduleInterval = "daily" | "weekly" | "monthly";
+
+export interface ScheduleRecord {
+  id?: number;
+  url: string;
+  strategy: Strategy;
+  interval: ScheduleInterval;
+  enabled: boolean;
+  notifyOnComplete: boolean;
+  notifyOnBudgetExceed: boolean;
+  nextRunAt: string; // ISO 8601
+  lastRunAt?: string; // ISO 8601
+  createdAt: string; // ISO 8601
 }
 
 // ------------------------------------------
