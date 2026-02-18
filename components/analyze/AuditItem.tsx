@@ -45,13 +45,13 @@ export function AuditItem({ audit }: AuditItemProps) {
         variant="outline"
         className={IMPACT_STYLES[audit.impact]}
       >
-        {t(IMPACT_LABEL_KEYS[audit.impact])}
+        {IMPACT_LABEL_KEYS[audit.impact] ? t(IMPACT_LABEL_KEYS[audit.impact]) : audit.impact}
       </Badge>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium">{audit.title}</p>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-xs text-muted-foreground">
-            {t(CATEGORY_LABEL_KEYS[audit.category])}
+            {CATEGORY_LABEL_KEYS[audit.category] ? t(CATEGORY_LABEL_KEYS[audit.category]) : audit.category}
           </span>
           {audit.displayValue && (
             <span className="text-xs text-muted-foreground">

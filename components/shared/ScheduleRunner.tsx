@@ -32,11 +32,14 @@ async function runOverdueSchedules() {
     );
 
     for (const schedule of overdue) {
-      // Optimistically update nextRunAt to prevent multi-tab duplicate execution
+      // Conditionally update nextRunAt to prevent multi-tab duplicate execution
       const newNextRunAt = calculateNextRunAt(schedule.interval);
-      await db.schedules.update(schedule.id!, {
-        nextRunAt: newNextRunAt,
-      });
+      const updated = await db.schedules
+        .where("id")
+        .equals(schedule.id!)
+        .and((s) => s.nextRunAt === schedule.nextRunAt)
+        .modify({ nextRunAt: newNextRunAt });
+      if (updated === 0) continue;
 
       try {
         const response = await analyzeUrl({
@@ -65,7 +68,7 @@ async function runOverdueSchedules() {
         if (schedule.notifyOnComplete) {
           sendNotification(
             "PageDoctor",
-            `${schedule.url} - Score: ${result.scores.performance}`,
+            `${schedule.url} - 성능 점수: ${result.scores.performance}`,
           );
         }
 
@@ -91,7 +94,7 @@ async function checkBudgetExceed(url: string, performanceScore: number) {
     if (budget.performance && performanceScore < budget.performance) {
       sendNotification(
         "PageDoctor",
-        `${url} - Performance ${performanceScore} < Budget ${budget.performance}`,
+        `${url} - 성능 ${performanceScore} < 목표 ${budget.performance}`,
       );
     }
   } catch {

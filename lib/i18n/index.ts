@@ -9,7 +9,7 @@ export const dictionaries: Record<Locale, Dictionary> = { ko, en };
 
 export const LOCALE_LABELS: Record<Locale, string> = {
   ko: "한국어",
-  en: "English",
+  en: "영어",
 };
 
 export const DEFAULT_LOCALE: Locale = "ko";

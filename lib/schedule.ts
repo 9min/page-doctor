@@ -11,9 +11,14 @@ export function calculateNextRunAt(interval: ScheduleInterval, from?: Date): str
     case "weekly":
       next.setDate(next.getDate() + 7);
       break;
-    case "monthly":
+    case "monthly": {
+      const day = next.getDate();
+      next.setDate(1);
       next.setMonth(next.getMonth() + 1);
+      const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+      next.setDate(Math.min(day, lastDay));
       break;
+    }
   }
 
   return next.toISOString();

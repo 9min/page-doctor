@@ -67,8 +67,16 @@ export function useSchedule(url: string | null, strategy: Strategy): UseSchedule
       const now = new Date().toISOString();
       const nextRunAt = calculateNextRunAt(data.interval);
 
-      if (schedule?.id) {
-        await db.schedules.update(schedule.id, {
+      const existing =
+        schedule?.id
+          ? schedule
+          : await db.schedules
+              .where("[url+strategy]")
+              .equals([url, strategy])
+              .first();
+
+      if (existing?.id) {
+        await db.schedules.update(existing.id, {
           interval: data.interval,
           notifyOnComplete: data.notifyOnComplete,
           notifyOnBudgetExceed: data.notifyOnBudgetExceed,

@@ -33,6 +33,8 @@ export function LocaleSwitcher() {
   return (
     <button
       type="button"
+      role="switch"
+      aria-checked={locale === "ko"}
       onClick={() => setLocale(locale === "ko" ? "en" : "ko")}
       className="flex h-9 items-center justify-center gap-1 rounded-xl border border-border bg-secondary px-2.5 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground cursor-pointer"
       aria-label={t("locale.switch")}
