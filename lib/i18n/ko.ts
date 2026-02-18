@@ -74,6 +74,7 @@ const ko = {
   "audit.title": "개선 제안",
   "audit.empty": "개선 제안이 없습니다.",
   "audit.filter.all": "전체",
+  "audit.filter.ariaLabel": "카테고리 필터",
   "audit.impact.high": "높음",
   "audit.impact.medium": "보통",
   "audit.impact.low": "낮음",

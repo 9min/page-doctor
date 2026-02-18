@@ -79,7 +79,7 @@ export function UrlInput() {
               onClick={() => setStrategy("desktop")}
               aria-checked={strategy === "desktop"}
               role="radio"
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer ${
                 strategy === "desktop"
                   ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -93,7 +93,7 @@ export function UrlInput() {
               onClick={() => setStrategy("mobile")}
               aria-checked={strategy === "mobile"}
               role="radio"
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer ${
                 strategy === "mobile"
                   ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
