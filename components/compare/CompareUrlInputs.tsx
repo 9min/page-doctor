@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus, Loader2 } from "lucide-react";
+import { Plus, Minus, Loader2, Monitor, Smartphone } from "lucide-react";
 import { isValidUrl, normalizeUrl } from "@/lib/utils";
 import type { Strategy } from "@/types";
 
@@ -67,22 +67,25 @@ export function CompareUrlInputs({
         {urls.map((url, i) => (
           <div key={i}>
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/10 text-xs font-semibold text-[#3B82F6]">
                 {i + 1}
               </span>
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => updateUrl(i, e.target.value)}
-                placeholder={`https://example${i + 1}.com`}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                disabled={isComparing}
-              />
+              <div className="focus-glow w-full rounded-xl border border-border/50 transition-all duration-200">
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => updateUrl(i, e.target.value)}
+                  placeholder={`https://example${i + 1}.com`}
+                  className="w-full rounded-xl border-0 bg-transparent px-3 py-2 text-sm outline-none"
+                  disabled={isComparing}
+                  aria-label={`비교할 URL ${i + 1}`}
+                />
+              </div>
               {urls.length > 2 && (
                 <button
                   type="button"
                   onClick={() => removeUrl(i)}
-                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                  className="rounded-lg p-2 text-muted-foreground transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                   aria-label="URL 제거"
                   disabled={isComparing}
                 >
@@ -102,7 +105,7 @@ export function CompareUrlInputs({
           type="button"
           onClick={addUrl}
           disabled={isComparing}
-          className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           URL 추가
@@ -110,36 +113,46 @@ export function CompareUrlInputs({
       )}
 
       {/* Strategy selector */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">전략:</span>
-        <label className="flex items-center gap-1.5 text-sm">
-          <input
-            type="radio"
-            name="strategy"
-            value="mobile"
-            checked={strategy === "mobile"}
-            onChange={() => setStrategy("mobile")}
+        <div className="flex gap-1 rounded-xl bg-secondary p-1" role="radiogroup" aria-label="분석 전략">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={strategy === "desktop"}
+            onClick={() => setStrategy("desktop")}
             disabled={isComparing}
-          />
-          모바일
-        </label>
-        <label className="flex items-center gap-1.5 text-sm">
-          <input
-            type="radio"
-            name="strategy"
-            value="desktop"
-            checked={strategy === "desktop"}
-            onChange={() => setStrategy("desktop")}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+              strategy === "desktop"
+                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Monitor className="h-3.5 w-3.5" aria-hidden="true" />
+            데스크톱
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={strategy === "mobile"}
+            onClick={() => setStrategy("mobile")}
             disabled={isComparing}
-          />
-          데스크톱
-        </label>
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+              strategy === "mobile"
+                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
+            모바일
+          </button>
+        </div>
       </div>
 
       <button
         type="submit"
         disabled={isComparing}
-        className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+        className="btn-gradient w-full rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-50 cursor-pointer"
       >
         {isComparing ? (
           <span className="flex items-center justify-center gap-2">

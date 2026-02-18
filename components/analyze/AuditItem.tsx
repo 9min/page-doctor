@@ -20,9 +20,17 @@ const IMPACT_LABELS = {
   low: "낮음",
 };
 
+const IMPACT_BAR = {
+  high: "border-l-[#EF4444]",
+  medium: "border-l-[#F59E0B]",
+  low: "border-l-border",
+};
+
 export function AuditItem({ audit }: AuditItemProps) {
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+    <div
+      className={`flex items-start gap-3 rounded-xl border border-border border-l-[3px] p-3.5 transition-colors duration-200 hover:bg-secondary ${IMPACT_BAR[audit.impact]}`}
+    >
       <Badge
         variant="outline"
         className={IMPACT_STYLES[audit.impact]}

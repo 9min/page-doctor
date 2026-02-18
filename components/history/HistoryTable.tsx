@@ -24,22 +24,24 @@ export function HistoryTable({ records, onDelete }: HistoryTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-muted-foreground">
-              <th className="px-4 py-3 font-medium">날짜</th>
-              <th className="px-4 py-3 font-medium">전략</th>
-              <th className="px-4 py-3 font-medium text-center">성능</th>
-              <th className="px-4 py-3 font-medium text-center">LCP</th>
-              <th className="px-4 py-3 font-medium text-center">INP</th>
-              <th className="px-4 py-3 font-medium text-center">CLS</th>
-              <th className="px-4 py-3 font-medium text-center">등급</th>
-              <th className="px-4 py-3 font-medium text-center">삭제</th>
+            <tr className="border-b border-border/50 text-left text-muted-foreground">
+              <th className="px-4 py-3.5 font-medium">날짜</th>
+              <th className="px-4 py-3.5 font-medium">전략</th>
+              <th className="px-4 py-3.5 font-medium text-center">성능</th>
+              <th className="px-4 py-3.5 font-medium text-center">LCP</th>
+              <th className="px-4 py-3.5 font-medium text-center">INP</th>
+              <th className="px-4 py-3.5 font-medium text-center">CLS</th>
+              <th className="px-4 py-3.5 font-medium text-center">등급</th>
+              <th className="px-4 py-3.5 font-medium text-center">삭제</th>
             </tr>
           </thead>
           <tbody>
             {records.map((record, index) => (
               <tr
                 key={record.id ?? index}
-                className="border-b border-border/50 transition-colors hover:bg-muted/30"
+                className={`border-b border-border/30 transition-colors duration-150 hover:bg-[#3B82F6]/5 ${
+                  index % 2 === 1 ? "bg-secondary" : ""
+                }`}
               >
                 <td className="px-4 py-3 whitespace-nowrap">
                   {formatDate(record.analyzedAt)}
@@ -47,16 +49,16 @@ export function HistoryTable({ records, onDelete }: HistoryTableProps) {
                 <td className="px-4 py-3">
                   {record.strategy === "mobile" ? "모바일" : "데스크톱"}
                 </td>
-                <td className="px-4 py-3 text-center font-semibold">
+                <td className="px-4 py-3 text-center font-bold">
                   {record.scores.performance}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center font-mono text-xs">
                   {formatMetricValue("LCP", record.webVitals.lcp)}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center font-mono text-xs">
                   {formatMetricValue("INP", record.webVitals.inp)}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center font-mono text-xs">
                   {formatMetricValue("CLS", record.webVitals.cls)}
                 </td>
                 <td className="px-4 py-3 text-center">
@@ -67,7 +69,7 @@ export function HistoryTable({ records, onDelete }: HistoryTableProps) {
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => record.id && onDelete(record.id)}
-                    className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    className="rounded-lg p-1.5 text-muted-foreground transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                     aria-label="기록 삭제"
                   >
                     <Trash2 className="h-4 w-4" />

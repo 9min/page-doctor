@@ -34,6 +34,14 @@ export function CompareTable({ items }: CompareTableProps) {
 
   if (successItems.length === 0) return null;
 
+  const rows = [
+    { key: "performance", label: "성능 점수" },
+    ...METRICS.map(({ key, label }) => ({ key, label })),
+    { key: "accessibility" as const, label: "접근성" },
+    { key: "best-practices" as const, label: "권장사항" },
+    { key: "seo" as const, label: "SEO" },
+  ];
+
   return (
     <div className="glass-card overflow-hidden">
       <div className="p-6 pb-0">
@@ -42,12 +50,12 @@ export function CompareTable({ items }: CompareTableProps) {
       <div className="overflow-x-auto p-4">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-muted-foreground">
-              <th className="px-4 py-3 font-medium">지표</th>
+            <tr className="border-b border-border/50 text-left text-muted-foreground">
+              <th className="px-4 py-3.5 font-medium">지표</th>
               {successItems.map((item) => (
                 <th
                   key={item.url}
-                  className="px-4 py-3 font-medium text-center"
+                  className="px-4 py-3.5 font-medium text-center"
                   title={item.url}
                 >
                   {shortenUrl(item.url)}
@@ -56,64 +64,58 @@ export function CompareTable({ items }: CompareTableProps) {
             </tr>
           </thead>
           <tbody>
-            {/* Performance Score */}
-            <tr className="border-b border-border/50">
-              <td className="px-4 py-3 font-medium">성능 점수</td>
-              {successItems.map((item) => (
-                <td key={item.url} className="px-4 py-3 text-center">
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-lg font-bold">
-                      {item.result!.scores.performance}
-                    </span>
-                    <RatingBadge
-                      rating={getScoreRating(item.result!.scores.performance)}
-                    />
-                  </div>
-                </td>
-              ))}
-            </tr>
-
-            {/* CWV Metrics */}
-            {METRICS.map(({ key, label }) => (
-              <tr key={key} className="border-b border-border/50">
-                <td className="px-4 py-3 font-medium">{label}</td>
+            {rows.map((row, idx) => (
+              <tr key={row.key} className={`border-b border-border/30 transition-colors duration-150 hover:bg-[#3B82F6]/5 ${idx % 2 === 1 ? "bg-secondary" : ""}`}>
+                <td className="px-4 py-3 font-medium">{row.label}</td>
                 {successItems.map((item) => {
-                  const value =
-                    item.result!.webVitals[METRIC_TO_VITALS_KEY[key]];
+                  const isMetric = ["LCP", "INP", "CLS"].includes(row.key);
+                  const isPerformance = row.key === "performance";
+
+                  if (isPerformance) {
+                    return (
+                      <td key={item.url} className="px-4 py-3 text-center">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-lg font-bold">
+                            {item.result!.scores.performance}
+                          </span>
+                          <RatingBadge
+                            rating={getScoreRating(item.result!.scores.performance)}
+                          />
+                        </div>
+                      </td>
+                    );
+                  }
+
+                  if (isMetric) {
+                    const metricKey = row.key as WebVitalMetric;
+                    const value = item.result!.webVitals[METRIC_TO_VITALS_KEY[metricKey]];
+                    return (
+                      <td key={item.url} className="px-4 py-3 text-center">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-mono text-xs">
+                            {formatMetricValue(metricKey, value)}
+                          </span>
+                          {value !== null && (
+                            <RatingBadge rating={getMetricRating(metricKey, value)} />
+                          )}
+                        </div>
+                      </td>
+                    );
+                  }
+
+                  const scores = item.result!.scores;
+                  const scoreKey = row.key as keyof typeof scores;
                   return (
                     <td key={item.url} className="px-4 py-3 text-center">
                       <div className="flex flex-col items-center gap-1">
-                        <span>{formatMetricValue(key, value)}</span>
-                        {value !== null && (
-                          <RatingBadge rating={getMetricRating(key, value)} />
-                        )}
+                        <span className="font-semibold">{scores[scoreKey]}</span>
+                        <RatingBadge
+                          rating={getScoreRating(item.result!.scores[scoreKey])}
+                        />
                       </div>
                     </td>
                   );
                 })}
-              </tr>
-            ))}
-
-            {/* Other Scores */}
-            {(
-              [
-                { key: "accessibility", label: "접근성" },
-                { key: "best-practices", label: "권장사항" },
-                { key: "seo", label: "SEO" },
-              ] as const
-            ).map(({ key, label }) => (
-              <tr key={key} className="border-b border-border/50">
-                <td className="px-4 py-3 font-medium">{label}</td>
-                {successItems.map((item) => (
-                  <td key={item.url} className="px-4 py-3 text-center">
-                    <div className="flex flex-col items-center gap-1">
-                      <span>{item.result!.scores[key]}</span>
-                      <RatingBadge
-                        rating={getScoreRating(item.result!.scores[key])}
-                      />
-                    </div>
-                  </td>
-                ))}
               </tr>
             ))}
           </tbody>

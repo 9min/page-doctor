@@ -17,6 +17,21 @@ function shortenUrl(url: string) {
   }
 }
 
+const MEDAL_STYLES = [
+  {
+    text: "text-yellow-400",
+    bg: "bg-gradient-to-r from-yellow-500/10 to-amber-500/5 border border-yellow-500/20",
+  },
+  {
+    text: "text-gray-400",
+    bg: "bg-secondary",
+  },
+  {
+    text: "text-amber-600",
+    bg: "bg-secondary",
+  },
+];
+
 export function RankingCard({ items }: RankingCardProps) {
   const successItems = items
     .filter((item) => item.result !== null)
@@ -26,40 +41,36 @@ export function RankingCard({ items }: RankingCardProps) {
 
   if (successItems.length === 0) return null;
 
-  const medalColors = [
-    "text-yellow-400",
-    "text-gray-400",
-    "text-amber-600",
-  ];
-
   return (
     <div className="glass-card p-6">
       <h2 className="mb-4 text-lg font-semibold flex items-center gap-2">
         <Trophy className="h-5 w-5 text-yellow-400" />
         종합 순위
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {successItems.map((item, i) => {
           const score = item.result!.scores.performance;
+          const style = MEDAL_STYLES[i] ?? { text: "text-muted-foreground", bg: "bg-secondary" };
+
           return (
             <div
               key={item.url}
-              className="flex items-center gap-3 rounded-lg bg-muted/30 px-4 py-3 transition-colors"
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-colors duration-200 ${style.bg}`}
             >
               <span
-                className={`text-2xl font-bold ${medalColors[i] ?? "text-muted-foreground"}`}
+                className={`text-2xl font-bold ${style.text}`}
               >
                 {i + 1}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="truncate font-medium" title={item.url}>
+                <p className="truncate font-semibold" title={item.url}>
                   {shortenUrl(item.url)}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
                   {item.url}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <span className="text-xl font-bold">{score}</span>
                 <RatingBadge rating={getScoreRating(score)} />
               </div>

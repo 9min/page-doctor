@@ -17,30 +17,50 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="glass-card sticky top-0 z-50 border-b border-border/40">
-      <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold">
-          <Activity className="h-5 w-5 text-primary" aria-hidden="true" />
-          <span>PageDoctor</span>
-        </Link>
+    <header className="sticky top-0 z-50 w-full">
+      <div className="mx-auto max-w-7xl px-4 pt-3">
+        <div className="glass-card flex h-14 items-center justify-between rounded-2xl px-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 font-bold tracking-tight cursor-pointer"
+          >
+            <Activity
+              className="h-5 w-5 text-[#3B82F6]"
+              aria-hidden="true"
+            />
+            <span className="text-gradient">PageDoctor</span>
+          </Link>
 
-        <nav className="flex items-center gap-1" aria-label="메인 네비게이션">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "rounded-md px-3 py-2 text-sm transition-colors hover:text-foreground",
-                pathname === item.href
-                  ? "text-foreground font-medium"
-                  : "text-muted-foreground"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <ThemeToggle />
-        </nav>
+          <nav
+            className="flex items-center gap-1"
+            aria-label="메인 네비게이션"
+          >
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "rounded-xl px-3.5 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer",
+                    isActive
+                      ? "bg-[#3B82F6]/10 text-[#3B82F6]"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <div className="ml-2 border-l border-border pl-2">
+              <ThemeToggle />
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
   );

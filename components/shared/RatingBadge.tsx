@@ -17,11 +17,12 @@ export function RatingBadge({ rating, className = "" }: RatingBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-shadow duration-200 ${className}`}
       style={{
         backgroundColor: colors.bg,
         color: colors.text,
         border: `1px solid ${colors.border}`,
+        boxShadow: `0 0 8px ${colors.text}20`,
       }}
     >
       {RATING_LABELS[rating]}
