@@ -69,7 +69,7 @@ export function CompareUrlInputs({
         {urls.map((url, i) => (
           <div key={i}>
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/10 text-xs font-semibold text-[#3B82F6]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-foreground">
                 {i + 1}
               </span>
               <div className="focus-glow w-full rounded-xl border border-border/50 transition-all duration-200">
@@ -126,7 +126,7 @@ export function CompareUrlInputs({
             disabled={isComparing}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
               strategy === "desktop"
-                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                ? "bg-primary/20 text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -141,7 +141,7 @@ export function CompareUrlInputs({
             disabled={isComparing}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
               strategy === "mobile"
-                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                ? "bg-primary/20 text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

@@ -55,7 +55,7 @@ export function CoreWebVitals({
             onClick={() => setTab("lab")}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer ${
               tab === "lab"
-                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                ? "bg-primary/20 text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -71,7 +71,7 @@ export function CoreWebVitals({
             onClick={() => setTab("field")}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 motion-reduce:transition-none cursor-pointer ${
               tab === "field"
-                ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                ? "bg-primary/20 text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

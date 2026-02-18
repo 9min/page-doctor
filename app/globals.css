@@ -80,7 +80,7 @@
   --secondary: #F1F5F9;
   --secondary-foreground: #0F172A;
   --muted: #F1F5F9;
-  --muted-foreground: #5B6B80;
+  --muted-foreground: #475569;
   --accent: #F1F5F9;
   --accent-foreground: #0F172A;
   --destructive: #EF4444;
@@ -122,7 +122,7 @@
   --secondary: #1E293B;
   --secondary-foreground: #F8FAFC;
   --muted: #1E293B;
-  --muted-foreground: #94A3B8;
+  --muted-foreground: #A8B8CC;
   --accent: #1E293B;
   --accent-foreground: #F8FAFC;
   --destructive: #EF4444;
@@ -257,13 +257,13 @@
    ========================================== */
 
 .btn-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
   color: white;
   transition: all 0.2s ease;
 }
 
 .btn-gradient:hover {
-  background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
 }
 

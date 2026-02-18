@@ -99,7 +99,7 @@ export function ScheduleDialog({ url, strategy }: ScheduleDialogProps) {
                   onClick={() => setInterval(opt.value)}
                   className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer ${
                     interval === opt.value
-                      ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                      ? "bg-primary/20 text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >

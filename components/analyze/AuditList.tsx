@@ -46,7 +46,7 @@ export function AuditList({ audits }: AuditListProps) {
               onClick={() => setFilter(opt.key)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
                 filter === opt.key
-                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

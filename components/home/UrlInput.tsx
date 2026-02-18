@@ -81,7 +81,7 @@ export function UrlInput() {
               role="radio"
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
                 strategy === "desktop"
-                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -95,7 +95,7 @@ export function UrlInput() {
               role="radio"
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
                 strategy === "mobile"
-                  ? "bg-[#3B82F6]/10 text-[#3B82F6] shadow-sm"
+                  ? "bg-primary/20 text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

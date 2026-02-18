@@ -1,12 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Activity, BarChart3, History, GitCompareArrows } from "lucide-react";
 import { UrlInput } from "@/components/home/UrlInput";
-import { RecentAnalyses } from "@/components/home/RecentAnalyses";
-import { ScheduledAnalyses } from "@/components/home/ScheduledAnalyses";
 import { useTranslation } from "@/hooks/useTranslation";
 import type { TranslationKey } from "@/lib/i18n";
 import type { LucideIcon } from "lucide-react";
+
+const RecentAnalyses = dynamic(
+  () => import("@/components/home/RecentAnalyses").then((m) => ({ default: m.RecentAnalyses })),
+  { ssr: false }
+);
+const ScheduledAnalyses = dynamic(
+  () => import("@/components/home/ScheduledAnalyses").then((m) => ({ default: m.ScheduledAnalyses })),
+  { ssr: false }
+);
 
 const FEATURES: Array<{
   icon: LucideIcon;
