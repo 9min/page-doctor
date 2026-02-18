@@ -79,6 +79,10 @@ const en: Dictionary = {
   "audit.impact.high": "High",
   "audit.impact.medium": "Medium",
   "audit.impact.low": "Low",
+  "audit.description": "Description",
+  "audit.details.savingsMs": "Estimated time savings",
+  "audit.details.savingsBytes": "Estimated size savings",
+  "audit.details.items": "Items ({count})",
 
   // PDF Report
   "pdf.download": "PDF Report",
