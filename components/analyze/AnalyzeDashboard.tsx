@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Loader2, Globe, Monitor, Smartphone } from "lucide-react";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import { useHistory } from "@/hooks/useHistory";
+import { fetchCruxData } from "@/lib/api";
 import { ScoreOverview } from "./ScoreOverview";
 import { CoreWebVitals } from "./CoreWebVitals";
 import { AuditList } from "./AuditList";
@@ -12,7 +13,7 @@ import { PdfReportButton } from "./PdfReportButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScoreRating } from "@/lib/utils";
 import { RATING_COLORS } from "@/lib/constants";
-import type { Strategy } from "@/types";
+import type { CruxResult, Strategy } from "@/types";
 
 export function AnalyzeDashboard() {
   const searchParams = useSearchParams();
@@ -26,10 +27,12 @@ export function AnalyzeDashboard() {
   const { result, isLoading, error, analyze } = useAnalysis();
   const { saveResult } = useHistory();
   const savedRef = useRef(false);
+  const [cruxResult, setCruxResult] = useState<CruxResult | null>(null);
 
   useEffect(() => {
     if (url) {
       savedRef.current = false;
+      setCruxResult(null);
       analyze(url, strategy);
     }
   }, [url, strategy, analyze]);
@@ -38,6 +41,9 @@ export function AnalyzeDashboard() {
     if (result && !savedRef.current) {
       savedRef.current = true;
       saveResult(result);
+      fetchCruxData({ url: result.url })
+        .then((res) => setCruxResult(res.result))
+        .catch(() => setCruxResult(null));
     }
   }, [result, saveResult]);
 
@@ -103,7 +109,7 @@ export function AnalyzeDashboard() {
 
         {/* Core Web Vitals - spans 2 cols */}
         <div className="lg:col-span-2">
-          <CoreWebVitals webVitals={result.webVitals} />
+          <CoreWebVitals webVitals={result.webVitals} cruxResult={cruxResult} />
         </div>
 
         {/* Summary card - 1 col */}
