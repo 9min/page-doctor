@@ -153,6 +153,7 @@ const ko = {
 
   // Footer
   "footer.powered": "Google PageSpeed Insights API로 구동됩니다.",
+  "footer.copyright": "\u00A9 {year} PageDoctor. All rights reserved.",
 
   // Budget Indicator
   "budgetIndicator.aria": "목표: {target}점, 현재: {current}점",

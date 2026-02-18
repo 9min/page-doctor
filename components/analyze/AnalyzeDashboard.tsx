@@ -80,7 +80,7 @@ export function AnalyzeDashboard() {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
         <div className="glass-card p-8 text-center">
-          <Globe className="mx-auto h-10 w-10 text-muted-foreground/50" />
+          <Globe className="mx-auto h-10 w-10 text-muted-foreground" aria-hidden="true" />
           <p className="mt-3 text-muted-foreground">
             {t("analyze.noUrl")}
           </p>
@@ -249,7 +249,7 @@ function LoadingSkeleton({ url, strategy }: { url: string; strategy: Strategy })
             <div
               key={s.key}
               className={`flex items-center gap-3 transition-all duration-500 ${
-                isActive ? "text-foreground" : isDone ? "text-primary" : "text-muted-foreground/40"
+                isActive ? "text-foreground" : isDone ? "text-primary" : "text-muted-foreground/70"
               }`}
             >
               {/* Step dot / check */}

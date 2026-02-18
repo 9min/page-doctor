@@ -155,6 +155,7 @@ const en: Dictionary = {
 
   // Footer
   "footer.powered": "Powered by Google PageSpeed Insights API.",
+  "footer.copyright": "\u00A9 {year} PageDoctor. All rights reserved.",
 
   // Budget Indicator
   "budgetIndicator.aria": "Target: {target}, Current: {current}",

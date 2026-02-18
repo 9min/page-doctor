@@ -105,11 +105,11 @@ export function CoreWebVitals({
           tabIndex={0}
           className="flex flex-col items-center justify-center rounded-xl bg-secondary py-10 text-center"
         >
-          <Globe className="h-8 w-8 text-muted-foreground/50" aria-hidden="true" />
+          <Globe className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
           <p className="mt-3 text-sm font-medium text-muted-foreground">
             {t("cwv.field.noData")}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground/70">
+          <p className="mt-1 text-xs text-muted-foreground">
             {t("cwv.field.noDataDesc")}
           </p>
         </div>
@@ -138,7 +138,7 @@ export function CoreWebVitals({
             />
           </div>
           {tab === "field" && (
-            <p className="mt-3 text-xs text-muted-foreground/70">
+            <p className="mt-3 text-xs text-muted-foreground">
               {t("cwv.field.note")}
             </p>
           )}

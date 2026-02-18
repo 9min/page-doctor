@@ -86,7 +86,7 @@ export default function Home() {
                 aria-hidden="true"
               />
             </div>
-            <h3 className="text-base font-bold text-foreground">{t(feature.titleKey)}</h3>
+            <h2 className="text-base font-bold text-foreground">{t(feature.titleKey)}</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
               {t(feature.descKey)}
             </p>
