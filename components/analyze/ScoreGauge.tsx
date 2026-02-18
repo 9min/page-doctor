@@ -21,9 +21,10 @@ export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps
   const offset = circumference - (score / 100) * circumference;
   const filterId = `glow-${label.replace(/\s+/g, "-")}`;
 
-  // Target line position on the arc
-  const targetOffset = target != null
-    ? circumference - (target / 100) * circumference
+  // Target line position on the arc (clamped to 0-100)
+  const clampedTarget = target != null ? Math.min(100, Math.max(0, target)) : null;
+  const targetOffset = clampedTarget != null
+    ? circumference - (clampedTarget / 100) * circumference
     : null;
 
   return (
@@ -95,8 +96,8 @@ export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps
         {label}
       </span>
       <RatingBadge rating={rating} />
-      {target != null && (
-        <BudgetIndicator target={target} current={score} />
+      {clampedTarget != null && (
+        <BudgetIndicator target={clampedTarget} current={score} />
       )}
     </div>
   );

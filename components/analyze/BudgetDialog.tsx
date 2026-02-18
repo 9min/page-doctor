@@ -17,8 +17,8 @@ import type { PerformanceBudget, Category } from "@/types";
 
 interface BudgetDialogProps {
   budget: PerformanceBudget | null;
-  onSave: (budget: PerformanceBudget) => void;
-  onDelete: () => void;
+  onSave: (budget: PerformanceBudget) => void | Promise<void>;
+  onDelete: () => void | Promise<void>;
 }
 
 const CATEGORIES: Category[] = [
@@ -47,14 +47,22 @@ export function BudgetDialog({ budget, onSave, onDelete }: BudgetDialogProps) {
     }));
   };
 
-  const handleSave = () => {
-    onSave(values);
-    setOpen(false);
+  const handleSave = async () => {
+    try {
+      await onSave(values);
+      setOpen(false);
+    } catch {
+      console.error("Budget save failed");
+    }
   };
 
-  const handleDelete = () => {
-    onDelete();
-    setOpen(false);
+  const handleDelete = async () => {
+    try {
+      await onDelete();
+      setOpen(false);
+    } catch {
+      console.error("Budget delete failed");
+    }
   };
 
   const hasBudget = budget !== null;
