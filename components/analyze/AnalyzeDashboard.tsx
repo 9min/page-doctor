@@ -8,6 +8,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { ScoreOverview } from "./ScoreOverview";
 import { CoreWebVitals } from "./CoreWebVitals";
 import { AuditList } from "./AuditList";
+import { PdfReportButton } from "./PdfReportButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScoreRating } from "@/lib/utils";
 import { RATING_COLORS } from "@/lib/constants";
@@ -76,18 +77,21 @@ export function AnalyzeDashboard() {
   return (
     <div className="animate-fade-in space-y-6">
       {/* Header */}
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-xl font-bold">분석 결과</h1>
-        <div className="flex items-center gap-2 rounded-full bg-secondary px-3 py-1">
-          {strategy === "mobile" ? (
-            <Smartphone className="h-3.5 w-3.5 text-muted-foreground" />
-          ) : (
-            <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
-          )}
-          <span className="text-sm text-muted-foreground">
-            {result.url}
-          </span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-xl font-bold">분석 결과</h1>
+          <div className="flex items-center gap-2 rounded-full bg-secondary px-3 py-1">
+            {strategy === "mobile" ? (
+              <Smartphone className="h-3.5 w-3.5 text-muted-foreground" />
+            ) : (
+              <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+            )}
+            <span className="text-sm text-muted-foreground">
+              {result.url}
+            </span>
+          </div>
         </div>
+        <PdfReportButton result={result} />
       </div>
 
       {/* Bento Grid Layout */}
