@@ -1,0 +1,78 @@
+"use client";
+
+import { useState } from "react";
+import { FileDown, Loader2 } from "lucide-react";
+import type { AnalysisResult } from "@/types";
+
+interface PdfReportButtonProps {
+  result: AnalysisResult;
+}
+
+export function PdfReportButton({ result }: PdfReportButtonProps) {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    try {
+      const [{ pdf }, { PdfReportDocument }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/lib/pdf-template"),
+      ]);
+
+      const topAudits = [...result.audits]
+        .sort((a, b) => {
+          const order = { high: 0, medium: 1, low: 2 };
+          return order[a.impact] - order[b.impact];
+        })
+        .slice(0, 10);
+
+      const report = {
+        url: result.url,
+        analyzedAt: result.fetchedAt,
+        scores: result.scores,
+        webVitals: result.webVitals,
+        topAudits,
+      };
+
+      const blob = await pdf(<PdfReportDocument report={report} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const hostname = new URL(result.url).hostname;
+      const date = new Date(result.fetchedAt)
+        .toISOString()
+        .slice(0, 10);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `PageDoctor_${hostname}_${date}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleDownload}
+      disabled={isGenerating}
+      className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground disabled:opacity-50 cursor-pointer"
+    >
+      {isGenerating ? (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin" />
+          생성 중...
+        </>
+      ) : (
+        <>
+          <FileDown className="h-4 w-4" />
+          PDF 리포트
+        </>
+      )}
+    </button>
+  );
+}
