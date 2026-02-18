@@ -21,20 +21,19 @@ export interface LocaleContextValue {
 
 export const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+function getInitialLocale(): Locale {
+  if (typeof window === "undefined") return DEFAULT_LOCALE;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "ko" || stored === "en") return stored;
+  } catch {
+    // localStorage not available
+  }
+  return DEFAULT_LOCALE;
+}
 
-  // Sync from localStorage after hydration to avoid SSR mismatch
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "ko" || stored === "en") {
-        setLocaleState(stored);
-      }
-    } catch {
-      // localStorage not available
-    }
-  }, []);
+export function LocaleProvider({ children }: { children: React.ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
 
   // Keep document lang in sync
   useEffect(() => {
