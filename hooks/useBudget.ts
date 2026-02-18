@@ -47,18 +47,24 @@ export function useBudget(url: string | null) {
 
   const saveBudget = useCallback(
     async (newBudget: PerformanceBudget) => {
-      if (!url) return;
-      const key = budgetKey(url);
+      const currentUrl = url;
+      if (!currentUrl) return;
+      const key = budgetKey(currentUrl);
       await db.settings.put({ key, value: JSON.stringify(newBudget) });
-      setBudget(newBudget);
+      if (currentUrl === url) {
+        setBudget(newBudget);
+      }
     },
     [url],
   );
 
   const deleteBudget = useCallback(async () => {
-    if (!url) return;
-    await db.settings.delete(budgetKey(url));
-    setBudget(null);
+    const currentUrl = url;
+    if (!currentUrl) return;
+    await db.settings.delete(budgetKey(currentUrl));
+    if (currentUrl === url) {
+      setBudget(null);
+    }
   }, [url]);
 
   return { budget, isLoading, saveBudget, deleteBudget };

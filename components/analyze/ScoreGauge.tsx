@@ -73,12 +73,11 @@ export function ScoreGauge({ score, label, size = 120, target }: ScoreGaugeProps
               cy={size / 2}
               r={radius}
               fill="none"
-              stroke="rgba(255,255,255,0.5)"
               strokeWidth={strokeWidth + 2}
               strokeLinecap="butt"
               strokeDasharray={`2 ${circumference - 2}`}
               strokeDashoffset={targetOffset}
-              className="pointer-events-none"
+              className="pointer-events-none stroke-white/50"
             />
           )}
         </svg>
